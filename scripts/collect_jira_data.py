@@ -26,7 +26,7 @@ JQL_OPEN    = 'project = MAPEX AND status = Open AND createdDate > "2026-01-01"'
 WORKGROUP_FIELD = os.environ.get("WORKGROUP_FIELD", "customfield_10521")
 DATA_FILE = Path("data/weekly_snapshots.csv")
 
-# Build Basic Auth header manually (most reliable with Atlassian Cloud)
+# Basic Auth header
 _creds = base64.b64encode(f"{EMAIL}:{TOKEN}".encode()).decode()
 AUTH_HEADERS = {
     "Authorization": f"Basic {_creds}",
@@ -36,30 +36,41 @@ AUTH_HEADERS = {
 
 
 def jira_search(jql, fields):
-    """Paginate through all Jira issues using POST /rest/api/3/search."""
-    url = f"{JIRA_API}/search"
-    start = 0
+    """
+    Paginate through all Jira issues using POST /rest/api/3/search/jql
+    (the new Atlassian Cloud API as of 2025).
+    Uses nextPageToken-based pagination as required by the new endpoint.
+    """
+    url = f"{JIRA_API}/search/jql"
     all_issues = []
+    next_page_token = None
+
     while True:
         payload = {
             "jql": jql,
-            "startAt": start,
             "maxResults": 100,
             "fields": fields,
         }
+        if next_page_token:
+            payload["nextPageToken"] = next_page_token
+
         resp = requests.post(url, headers=AUTH_HEADERS, data=json.dumps(payload))
         print(f"  POST {url} -> HTTP {resp.status_code}")
         if not resp.ok:
             print(f"  Response body: {resp.text[:500]}")
         resp.raise_for_status()
+
         data = resp.json()
         issues = data.get("issues", [])
         all_issues.extend(issues)
-        total = data.get("total", 0)
-        if start + len(issues) >= total:
+        print(f"  Got {len(issues)} issues (total so far: {len(all_issues)})")
+
+        # New pagination: use nextPageToken if present
+        next_page_token = data.get("nextPageToken")
+        if not next_page_token or len(issues) == 0:
             break
-        start += 100
-    print(f"  Fetched {len(all_issues)} / {data.get('total', '?')} issues")
+
+    print(f"  Fetched {len(all_issues)} issues total")
     return all_issues
 
 
