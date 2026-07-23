@@ -9,6 +9,7 @@ and appends a new weekly row to data/weekly_snapshots.csv.
 import os
 import csv
 import json
+import base64
 import requests
 from datetime import datetime, timezone
 from collections import defaultdict
@@ -25,13 +26,18 @@ JQL_OPEN    = 'project = MAPEX AND status = Open AND createdDate > "2026-01-01"'
 WORKGROUP_FIELD = os.environ.get("WORKGROUP_FIELD", "customfield_10521")
 DATA_FILE = Path("data/weekly_snapshots.csv")
 
+# Build Basic Auth header manually (most reliable with Atlassian Cloud)
+_creds = base64.b64encode(f"{EMAIL}:{TOKEN}".encode()).decode()
+AUTH_HEADERS = {
+    "Authorization": f"Basic {_creds}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
 
-def jira_get(jql, fields):
-    """Paginate through all Jira issues using POST /rest/api/3/search/jql (Atlassian v3)."""
-    auth = (EMAIL, TOKEN)
-    headers = {"Accept": "application/json", "Content-Type": "application/json"}
-    # Use POST to /search/jql (preferred by Atlassian, avoids 410 on GET /search)
-    url = f"{JIRA_API}/search/jql"
+
+def jira_search(jql, fields):
+    """Paginate through all Jira issues using POST /rest/api/3/search."""
+    url = f"{JIRA_API}/search"
     start = 0
     all_issues = []
     while True:
@@ -41,11 +47,10 @@ def jira_get(jql, fields):
             "maxResults": 100,
             "fields": fields,
         }
-        resp = requests.post(url, auth=auth, headers=headers, data=json.dumps(payload))
-        # Fallback: if /search/jql not available, try POST to /search
-        if resp.status_code == 404:
-            url_fallback = f"{JIRA_API}/search"
-            resp = requests.post(url_fallback, auth=auth, headers=headers, data=json.dumps(payload))
+        resp = requests.post(url, headers=AUTH_HEADERS, data=json.dumps(payload))
+        print(f"  POST {url} -> HTTP {resp.status_code}")
+        if not resp.ok:
+            print(f"  Response body: {resp.text[:500]}")
         resp.raise_for_status()
         data = resp.json()
         issues = data.get("issues", [])
@@ -54,7 +59,7 @@ def jira_get(jql, fields):
         if start + len(issues) >= total:
             break
         start += 100
-    print(f"  Fetched {len(all_issues)} issues for JQL: {jql[:60]}...")
+    print(f"  Fetched {len(all_issues)} / {data.get('total', '?')} issues")
     return all_issues
 
 
@@ -79,10 +84,16 @@ def main():
     iso_week = now.strftime("%G-W%V")
     date_str = now.strftime("%Y-%m-%d")
     print(f"\n=== Collecting Jira data for {iso_week} ({date_str}) ===")
+    print(f"Jira API base: {JIRA_API}")
+    print(f"Workgroup field: {WORKGROUP_FIELD}")
 
     fields = ["summary", WORKGROUP_FIELD]
-    backlog_issues = jira_get(JQL_BACKLOG, fields)
-    open_issues    = jira_get(JQL_OPEN, fields)
+
+    print("\n-- Fetching Backlog issues --")
+    backlog_issues = jira_search(JQL_BACKLOG, fields)
+
+    print("\n-- Fetching Open issues --")
+    open_issues = jira_search(JQL_OPEN, fields)
 
     backlog_counts = defaultdict(int)
     open_counts    = defaultdict(int)
@@ -93,7 +104,7 @@ def main():
         open_counts[extract_workgroup(issue, WORKGROUP_FIELD)] += 1
 
     all_workgroups = sorted(set(backlog_counts) | set(open_counts))
-    print(f"Workgroups found: {all_workgroups}")
+    print(f"\nWorkgroups found: {all_workgroups}")
     for wg in all_workgroups:
         print(f"  {wg}: backlog={backlog_counts[wg]}, open={open_counts[wg]}")
 
@@ -112,13 +123,13 @@ def main():
     ]
 
     if not new_rows:
-        print(f"Data for {iso_week} already recorded. Skipping.")
+        print(f"\nData for {iso_week} already recorded. Skipping.")
     else:
         with open(DATA_FILE, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=["week","date","workgroup","backlog","open"])
             writer.writeheader()
             writer.writerows(existing_rows + new_rows)
-        print(f"Appended {len(new_rows)} rows to {DATA_FILE}")
+        print(f"\nAppended {len(new_rows)} rows to {DATA_FILE}")
 
     with open("data/latest_snapshot.json", "w") as f:
         json.dump({
