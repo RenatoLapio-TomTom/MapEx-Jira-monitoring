@@ -27,19 +27,31 @@ DATA_FILE = Path("data/weekly_snapshots.csv")
 
 
 def jira_get(jql, fields):
+    """Paginate through all Jira issues using POST /rest/api/3/search/jql (Atlassian v3)."""
     auth = (EMAIL, TOKEN)
-    headers = {"Accept": "application/json"}
-    url = f"{JIRA_API}/search"
+    headers = {"Accept": "application/json", "Content-Type": "application/json"}
+    # Use POST to /search/jql (preferred by Atlassian, avoids 410 on GET /search)
+    url = f"{JIRA_API}/search/jql"
     start = 0
     all_issues = []
     while True:
-        params = {"jql": jql, "startAt": start, "maxResults": 100, "fields": ",".join(fields)}
-        resp = requests.get(url, params=params, auth=auth, headers=headers)
+        payload = {
+            "jql": jql,
+            "startAt": start,
+            "maxResults": 100,
+            "fields": fields,
+        }
+        resp = requests.post(url, auth=auth, headers=headers, data=json.dumps(payload))
+        # Fallback: if /search/jql not available, try POST to /search
+        if resp.status_code == 404:
+            url_fallback = f"{JIRA_API}/search"
+            resp = requests.post(url_fallback, auth=auth, headers=headers, data=json.dumps(payload))
         resp.raise_for_status()
         data = resp.json()
         issues = data.get("issues", [])
         all_issues.extend(issues)
-        if start + len(issues) >= data["total"]:
+        total = data.get("total", 0)
+        if start + len(issues) >= total:
             break
         start += 100
     print(f"  Fetched {len(all_issues)} issues for JQL: {jql[:60]}...")
