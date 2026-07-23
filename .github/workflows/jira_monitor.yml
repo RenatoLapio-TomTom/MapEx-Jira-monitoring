@@ -1,0 +1,49 @@
+name: Jira Weekly Monitoring
+
+on:
+  schedule:
+    - cron: '0 19 * * 6'
+  workflow_dispatch:
+
+jobs:
+  collect-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Collect Jira data
+        env:
+          ATLASSIAN_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
+          ATLASSIAN_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
+          ATLASSIAN_BASE_URL: ${{ secrets.ATLASSIAN_BASE_URL }}
+          CONFLUENCE_SPACE_KEY: ${{ secrets.CONFLUENCE_SPACE_KEY }}
+          WORKGROUP_FIELD: ${{ secrets.WORKGROUP_FIELD }}
+        run: python scripts/collect_jira_data.py
+
+      - name: Update Confluence charts
+        env:
+          ATLASSIAN_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
+          ATLASSIAN_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
+          ATLASSIAN_BASE_URL: ${{ secrets.ATLASSIAN_BASE_URL }}
+          CONFLUENCE_SPACE_KEY: ${{ secrets.CONFLUENCE_SPACE_KEY }}
+        run: python scripts/update_confluence.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "chore: weekly Jira snapshot $(date +'%Y-W%V')"
+          git push
