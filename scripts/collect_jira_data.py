@@ -20,12 +20,12 @@ TOKEN    = os.environ["ATLASSIAN_API_TOKEN"]
 BASE_URL = os.environ["ATLASSIAN_BASE_URL"].rstrip("/")
 JIRA_API = f"{BASE_URL}/rest/api/3"
 
-# Status names exactly as they appear in Jira (uppercase)
-JQL_BACKLOG = 'project = MAPEX AND status = BACKLOG AND createdDate > "2026-01-01"'
-JQL_OPEN    = 'project = MAPEX AND status = OPEN AND createdDate > "2026-01-01"'
+# No date filter — fetch all BACKLOG and OPEN issues in the project
+JQL_BACKLOG = 'project = MAPEX AND status = BACKLOG'
+JQL_OPEN    = 'project = MAPEX AND status = OPEN'
 
 WORKGROUP_FIELD = os.environ.get("WORKGROUP_FIELD", "customfield_10521")
-DATA_FILE    = Path("data/weekly_snapshots.csv")
+DATA_FILE     = Path("data/weekly_snapshots.csv")
 SNAPSHOT_FILE = Path("data/latest_snapshot.json")
 
 # Basic Auth header
@@ -114,7 +114,7 @@ def main():
 
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-    # --- Write latest_snapshot.json (read by update_confluence.py in same run) ---
+    # Write latest_snapshot.json first (read by update_confluence.py in same run)
     snapshot = {
         "week": iso_week, "date": date_str,
         "workgroups": {wg: {"backlog": backlog_counts[wg], "open": open_counts[wg]} for wg in all_workgroups}
@@ -123,7 +123,7 @@ def main():
         json.dump(snapshot, f, indent=2)
     print(f"Written {SNAPSHOT_FILE}")
 
-    # --- Append to weekly CSV ---
+    # Append to weekly CSV
     existing_rows = []
     if DATA_FILE.exists() and DATA_FILE.stat().st_size > 0:
         with open(DATA_FILE, newline="") as f:
