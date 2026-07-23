@@ -2,7 +2,7 @@
 """
 collect_jira_data.py
 
-Fetches Backlog and Open issue counts per workgroup from Jira
+Fetches BACKLOG and OPEN issue counts per workgroup from Jira
 and appends a new weekly row to data/weekly_snapshots.csv.
 """
 
@@ -20,11 +20,13 @@ TOKEN    = os.environ["ATLASSIAN_API_TOKEN"]
 BASE_URL = os.environ["ATLASSIAN_BASE_URL"].rstrip("/")
 JIRA_API = f"{BASE_URL}/rest/api/3"
 
-JQL_BACKLOG = 'project = MAPEX AND status = Backlog AND createdDate > "2026-01-01"'
-JQL_OPEN    = 'project = MAPEX AND status = Open AND createdDate > "2026-01-01"'
+# Status names exactly as they appear in Jira (uppercase)
+JQL_BACKLOG = 'project = MAPEX AND status = BACKLOG AND createdDate > "2026-01-01"'
+JQL_OPEN    = 'project = MAPEX AND status = OPEN AND createdDate > "2026-01-01"'
 
 WORKGROUP_FIELD = os.environ.get("WORKGROUP_FIELD", "customfield_10521")
-DATA_FILE = Path("data/weekly_snapshots.csv")
+DATA_FILE    = Path("data/weekly_snapshots.csv")
+SNAPSHOT_FILE = Path("data/latest_snapshot.json")
 
 # Basic Auth header
 _creds = base64.b64encode(f"{EMAIL}:{TOKEN}".encode()).decode()
@@ -36,21 +38,13 @@ AUTH_HEADERS = {
 
 
 def jira_search(jql, fields):
-    """
-    Paginate through all Jira issues using POST /rest/api/3/search/jql
-    (the new Atlassian Cloud API as of 2025).
-    Uses nextPageToken-based pagination as required by the new endpoint.
-    """
+    """Paginate using POST /rest/api/3/search/jql with nextPageToken."""
     url = f"{JIRA_API}/search/jql"
     all_issues = []
     next_page_token = None
 
     while True:
-        payload = {
-            "jql": jql,
-            "maxResults": 100,
-            "fields": fields,
-        }
+        payload = {"jql": jql, "maxResults": 100, "fields": fields}
         if next_page_token:
             payload["nextPageToken"] = next_page_token
 
@@ -65,7 +59,6 @@ def jira_search(jql, fields):
         all_issues.extend(issues)
         print(f"  Got {len(issues)} issues (total so far: {len(all_issues)})")
 
-        # New pagination: use nextPageToken if present
         next_page_token = data.get("nextPageToken")
         if not next_page_token or len(issues) == 0:
             break
@@ -100,10 +93,10 @@ def main():
 
     fields = ["summary", WORKGROUP_FIELD]
 
-    print("\n-- Fetching Backlog issues --")
+    print("\n-- Fetching BACKLOG issues --")
     backlog_issues = jira_search(JQL_BACKLOG, fields)
 
-    print("\n-- Fetching Open issues --")
+    print("\n-- Fetching OPEN issues --")
     open_issues = jira_search(JQL_OPEN, fields)
 
     backlog_counts = defaultdict(int)
@@ -120,6 +113,17 @@ def main():
         print(f"  {wg}: backlog={backlog_counts[wg]}, open={open_counts[wg]}")
 
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+    # --- Write latest_snapshot.json (read by update_confluence.py in same run) ---
+    snapshot = {
+        "week": iso_week, "date": date_str,
+        "workgroups": {wg: {"backlog": backlog_counts[wg], "open": open_counts[wg]} for wg in all_workgroups}
+    }
+    with open(SNAPSHOT_FILE, "w") as f:
+        json.dump(snapshot, f, indent=2)
+    print(f"Written {SNAPSHOT_FILE}")
+
+    # --- Append to weekly CSV ---
     existing_rows = []
     if DATA_FILE.exists() and DATA_FILE.stat().st_size > 0:
         with open(DATA_FILE, newline="") as f:
@@ -134,20 +138,13 @@ def main():
     ]
 
     if not new_rows:
-        print(f"\nData for {iso_week} already recorded. Skipping.")
+        print(f"Data for {iso_week} already recorded in CSV. Skipping append.")
     else:
         with open(DATA_FILE, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=["week","date","workgroup","backlog","open"])
             writer.writeheader()
             writer.writerows(existing_rows + new_rows)
-        print(f"\nAppended {len(new_rows)} rows to {DATA_FILE}")
-
-    with open("data/latest_snapshot.json", "w") as f:
-        json.dump({
-            "week": iso_week, "date": date_str,
-            "workgroups": {wg: {"backlog": backlog_counts[wg], "open": open_counts[wg]} for wg in all_workgroups}
-        }, f, indent=2)
-    print("Written data/latest_snapshot.json")
+        print(f"Appended {len(new_rows)} rows to {DATA_FILE}")
 
 
 if __name__ == "__main__":
