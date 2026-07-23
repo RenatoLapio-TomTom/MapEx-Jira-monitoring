@@ -2,13 +2,15 @@
 """
 update_confluence.py
 
-Reads weekly_snapshots.csv and creates/updates one Confluence page
-per workgroup with a stacked bar chart showing weekly Backlog + Open trends.
+Reads latest_snapshot.json (written by collect_jira_data.py in the same run)
+and creates/updates one Confluence page per workgroup with a stacked bar chart.
+Also reads weekly_snapshots.csv for historical trend data if available.
 """
 
 import os
 import csv
 import json
+import base64
 import requests
 from collections import defaultdict
 from pathlib import Path
@@ -19,16 +21,26 @@ BASE_URL  = os.environ["ATLASSIAN_BASE_URL"].rstrip("/")
 SPACE_KEY = os.environ["CONFLUENCE_SPACE_KEY"]
 
 CONF_API  = f"{BASE_URL}/wiki/rest/api"
-AUTH      = (EMAIL, TOKEN)
-HEADERS   = {"Accept": "application/json", "Content-Type": "application/json"}
 DATA_FILE = Path("data/weekly_snapshots.csv")
+SNAPSHOT_FILE = Path("data/latest_snapshot.json")
 INDEX_TITLE = "MAPEX Jira Workgroup Trends"
+
+# Basic Auth header
+_creds = base64.b64encode(f"{EMAIL}:{TOKEN}".encode()).decode()
+HEADERS = {
+    "Authorization": f"Basic {_creds}",
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+}
 
 
 def get_page(title):
     resp = requests.get(f"{CONF_API}/content",
         params={"spaceKey": SPACE_KEY, "title": title, "expand": "version"},
-        auth=AUTH, headers=HEADERS)
+        headers=HEADERS)
+    print(f"  GET content '{title}' -> HTTP {resp.status_code}")
+    if not resp.ok:
+        print(f"  Response: {resp.text[:300]}")
     resp.raise_for_status()
     results = resp.json().get("results", [])
     return results[0] if results else None
@@ -42,7 +54,10 @@ def create_page(title, body_html, parent_id=None):
     }
     if parent_id:
         payload["ancestors"] = [{"id": parent_id}]
-    resp = requests.post(f"{CONF_API}/content", auth=AUTH, headers=HEADERS, data=json.dumps(payload))
+    resp = requests.post(f"{CONF_API}/content", headers=HEADERS, data=json.dumps(payload))
+    print(f"  POST content '{title}' -> HTTP {resp.status_code}")
+    if not resp.ok:
+        print(f"  Response: {resp.text[:300]}")
     resp.raise_for_status()
     return resp.json()
 
@@ -53,7 +68,10 @@ def update_page(page_id, version, title, body_html):
         "version": {"number": version + 1},
         "body": {"storage": {"value": body_html, "representation": "storage"}},
     }
-    resp = requests.put(f"{CONF_API}/content/{page_id}", auth=AUTH, headers=HEADERS, data=json.dumps(payload))
+    resp = requests.put(f"{CONF_API}/content/{page_id}", headers=HEADERS, data=json.dumps(payload))
+    print(f"  PUT content '{title}' -> HTTP {resp.status_code}")
+    if not resp.ok:
+        print(f"  Response: {resp.text[:300]}")
     resp.raise_for_status()
     return resp.json()
 
@@ -79,7 +97,7 @@ def build_chart_html(workgroup, weeks, backlog_vals, open_vals):
 <ac:structured-macro ac:name="chart" ac:schema-version="1">
   <ac:parameter ac:name="type">bar</ac:parameter>
   <ac:parameter ac:name="stacked">true</ac:parameter>
-  <ac:parameter ac:name="title">{workgroup} - Weekly Backlog &amp; Open Trend</ac:parameter>
+  <ac:parameter ac:name="title">{workgroup} - Weekly BACKLOG &amp; OPEN Trend</ac:parameter>
   <ac:parameter ac:name="width">800</ac:parameter>
   <ac:parameter ac:name="height">400</ac:parameter>
   <ac:parameter ac:name="colors">#FF8C00,#1F7BC0</ac:parameter>
@@ -99,7 +117,7 @@ def build_chart_html(workgroup, weeks, backlog_vals, open_vals):
     )
     return f"""
 <p>Auto-updated every Saturday by <a href="https://github.com/RenatoLapio-TomTom/MapEx-Jira-monitoring">MapEx Jira Monitoring</a>.<br/>
-<em>MAPEX issues created after 2026-01-01, Backlog or Open status.</em></p>
+<em>MAPEX issues created after 2026-01-01, BACKLOG or OPEN status.</em></p>
 <h2>Trend Chart</h2>
 {chart_macro}
 <h2>Raw Data</h2>
@@ -111,26 +129,45 @@ def build_chart_html(workgroup, weeks, backlog_vals, open_vals):
 
 
 def main():
-    if not DATA_FILE.exists():
-        print("No data file found. Run collect_jira_data.py first.")
-        return
+    print(f"\n=== Updating Confluence (space: {SPACE_KEY}) ===")
+    print(f"Confluence API: {CONF_API}")
 
+    # Load historical data from CSV (may be empty on first run)
     wg_data = defaultdict(dict)
-    with open(DATA_FILE, newline="") as f:
-        for row in csv.DictReader(f):
-            wg_data[row["workgroup"]][row["week"]] = {
-                "backlog": int(row["backlog"]), "open": int(row["open"])
-            }
+    if DATA_FILE.exists() and DATA_FILE.stat().st_size > 0:
+        with open(DATA_FILE, newline="") as f:
+            for row in csv.DictReader(f):
+                wg_data[row["workgroup"]][row["week"]] = {
+                    "backlog": int(row["backlog"]), "open": int(row["open"])
+                }
+        print(f"Loaded historical data from {DATA_FILE}")
+
+    # Merge in latest snapshot (written by collect_jira_data.py in same run)
+    if not SNAPSHOT_FILE.exists():
+        print(f"ERROR: {SNAPSHOT_FILE} not found. collect_jira_data.py must run first.")
+        raise SystemExit(1)
+
+    with open(SNAPSHOT_FILE) as f:
+        snapshot = json.load(f)
+
+    iso_week = snapshot["week"]
+    for wg, counts in snapshot["workgroups"].items():
+        wg_data[wg][iso_week] = counts
 
     workgroups = sorted(wg_data.keys())
-    print(f"\n=== Updating Confluence (space: {SPACE_KEY}) ===")
     print(f"Workgroups: {workgroups}")
+
+    if not workgroups:
+        print("No workgroups found — nothing to publish.")
+        return
 
     index_html = "<p>Auto-generated index of MAPEX workgroup trend pages.</p><ul>" + \
         "".join(f'<li><ac:link><ri:page ri:content-title="{wg} - MAPEX Trend" /></ac:link></li>' for wg in workgroups) + \
         "</ul>"
     index_page = upsert_page(INDEX_TITLE, index_html)
-    index_id = index_page.get("id") or get_page(INDEX_TITLE)["id"]
+    index_id = index_page.get("id")
+    if not index_id:
+        index_id = get_page(INDEX_TITLE)["id"]
 
     for wg in workgroups:
         weeks = sorted(wg_data[wg].keys())
