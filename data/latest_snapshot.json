@@ -1,6 +1,6 @@
 {
   "week": "2026-W30",
-  "date": "2026-07-23",
+  "date": "2026-07-25",
   "workgroups": {
     "Content Ops": {
       "backlog": 0,
@@ -11,7 +11,7 @@
       "open": 5
     },
     "LE - Canada and USA": {
-      "backlog": 10,
+      "backlog": 13,
       "open": 13
     },
     "LE - Eastern Europe and Central Asia": {
@@ -19,27 +19,27 @@
       "open": 21
     },
     "LE - Mexico and Latin America": {
-      "backlog": 8,
-      "open": 13
+      "backlog": 10,
+      "open": 11
     },
     "LE - North and Central Europe": {
-      "backlog": 36,
-      "open": 54
+      "backlog": 35,
+      "open": 57
     },
     "LE - Northeast Asia": {
       "backlog": 20,
       "open": 6
     },
     "LE - South Asia and Middle East": {
-      "backlog": 32,
-      "open": 26
+      "backlog": 31,
+      "open": 27
     },
     "LE - South West Europe": {
       "backlog": 18,
-      "open": 11
+      "open": 10
     },
     "LE - Southeast Asia and Oceania": {
-      "backlog": 17,
+      "backlog": 15,
       "open": 6
     },
     "Map Experts Gent": {
@@ -47,19 +47,19 @@
       "open": 10
     },
     "Map Experts Internal": {
-      "backlog": 37,
+      "backlog": 36,
       "open": 12
     },
     "Map Experts Lebanon": {
-      "backlog": 84,
-      "open": 34
+      "backlog": 81,
+      "open": 33
     },
     "Map Experts Lodz": {
       "backlog": 6,
       "open": 0
     },
     "Map Experts Pune": {
-      "backlog": 30,
+      "backlog": 29,
       "open": 5
     },
     "Unassigned": {
