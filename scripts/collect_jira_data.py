@@ -2,7 +2,7 @@
 """
 collect_jira_data.py
 
-Fetches BACKLOG and OPEN issue counts per workgroup from Jira
+Fetches BACKLOG, OPEN and CLOSED issue counts per workgroup from Jira
 and appends a new weekly row to data/weekly_snapshots.csv.
 """
 
@@ -20,9 +20,10 @@ TOKEN    = os.environ["ATLASSIAN_API_TOKEN"]
 BASE_URL = os.environ["ATLASSIAN_BASE_URL"].rstrip("/")
 JIRA_API = f"{BASE_URL}/rest/api/3"
 
-# No date filter — fetch all BACKLOG and OPEN issues in the project
+# No date filter — fetch all BACKLOG, OPEN and CLOSED issues in the project
 JQL_BACKLOG = 'project = MAPEX AND status = BACKLOG'
 JQL_OPEN    = 'project = MAPEX AND status = OPEN'
+JQL_CLOSED  = 'project = MAPEX AND status = Closed'
 
 WORKGROUP_FIELD = os.environ.get("WORKGROUP_FIELD", "customfield_10521")
 DATA_FILE     = Path("data/weekly_snapshots.csv")
@@ -99,25 +100,40 @@ def main():
     print("\n-- Fetching OPEN issues --")
     open_issues = jira_search(JQL_OPEN, fields)
 
+    print("\n-- Fetching CLOSED issues --")
+    closed_issues = jira_search(JQL_CLOSED, fields)
+
     backlog_counts = defaultdict(int)
     open_counts    = defaultdict(int)
+    closed_counts  = defaultdict(int)
 
     for issue in backlog_issues:
         backlog_counts[extract_workgroup(issue, WORKGROUP_FIELD)] += 1
     for issue in open_issues:
         open_counts[extract_workgroup(issue, WORKGROUP_FIELD)] += 1
+    for issue in closed_issues:
+        closed_counts[extract_workgroup(issue, WORKGROUP_FIELD)] += 1
 
-    all_workgroups = sorted(set(backlog_counts) | set(open_counts))
+    all_workgroups = sorted(set(backlog_counts) | set(open_counts) | set(closed_counts))
     print(f"\nWorkgroups found: {all_workgroups}")
     for wg in all_workgroups:
-        print(f"  {wg}: backlog={backlog_counts[wg]}, open={open_counts[wg]}")
+        print(
+            f"  {wg}: backlog={backlog_counts[wg]}, open={open_counts[wg]}, closed={closed_counts[wg]}"
+        )
 
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
 
     # Write latest_snapshot.json first (read by update_confluence.py in same run)
     snapshot = {
         "week": iso_week, "date": date_str,
-        "workgroups": {wg: {"backlog": backlog_counts[wg], "open": open_counts[wg]} for wg in all_workgroups}
+        "workgroups": {
+            wg: {
+                "backlog": backlog_counts[wg],
+                "open": open_counts[wg],
+                "closed": closed_counts[wg],
+            }
+            for wg in all_workgroups
+        },
     }
     with open(SNAPSHOT_FILE, "w") as f:
         json.dump(snapshot, f, indent=2)
@@ -128,11 +144,13 @@ def main():
     if DATA_FILE.exists() and DATA_FILE.stat().st_size > 0:
         with open(DATA_FILE, newline="") as f:
             existing_rows = list(csv.DictReader(f))
+            for row in existing_rows:
+                row["closed"] = row.get("closed") or 0
 
     existing_keys = {(r["week"], r["workgroup"]) for r in existing_rows}
     new_rows = [
         {"week": iso_week, "date": date_str, "workgroup": wg,
-         "backlog": backlog_counts[wg], "open": open_counts[wg]}
+         "backlog": backlog_counts[wg], "open": open_counts[wg], "closed": closed_counts[wg]}
         for wg in all_workgroups
         if (iso_week, wg) not in existing_keys
     ]
@@ -141,7 +159,9 @@ def main():
         print(f"Data for {iso_week} already recorded in CSV. Skipping append.")
     else:
         with open(DATA_FILE, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=["week","date","workgroup","backlog","open"])
+            writer = csv.DictWriter(
+                f, fieldnames=["week", "date", "workgroup", "backlog", "open", "closed"]
+            )
             writer.writeheader()
             writer.writerows(existing_rows + new_rows)
         print(f"Appended {len(new_rows)} rows to {DATA_FILE}")

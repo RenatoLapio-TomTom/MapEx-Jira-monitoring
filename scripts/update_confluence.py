@@ -4,7 +4,7 @@ update_confluence.py
 
 Reads latest_snapshot.json and weekly_snapshots.csv, then creates/updates
 one Confluence page per workgroup with a stacked bar chart image (via QuickChart.io)
-showing weekly Backlog + Open trends.
+showing weekly Backlog + Open + Closed trends.
 """
 
 import os
@@ -86,7 +86,7 @@ def upsert_page(title, body_html, parent_id=None):
         return result
 
 
-def build_quickchart_url(workgroup, weeks, backlog_vals, open_vals):
+def build_quickchart_url(workgroup, weeks, backlog_vals, open_vals, closed_vals):
     """Build a QuickChart.io URL for a stacked bar chart."""
     chart_config = {
         "type": "bar",
@@ -103,12 +103,17 @@ def build_quickchart_url(workgroup, weeks, backlog_vals, open_vals):
                     "data": open_vals,
                     "backgroundColor": "#1F7BC0",
                 },
+                {
+                    "label": "Closed",
+                    "data": closed_vals,
+                    "backgroundColor": "#28A745",
+                },
             ],
         },
         "options": {
             "title": {
                 "display": True,
-                "text": f"{workgroup} - Weekly BACKLOG & OPEN Trend",
+                "text": f"{workgroup} - Weekly BACKLOG, OPEN & CLOSED Trend",
             },
             "scales": {
                 "xAxes": [{"stacked": True}],
@@ -122,23 +127,23 @@ def build_quickchart_url(workgroup, weeks, backlog_vals, open_vals):
     return f"https://quickchart.io/chart?c={encoded}&width=800&height=400&backgroundColor=white"
 
 
-def build_page_html(workgroup, weeks, backlog_vals, open_vals):
-    chart_url = build_quickchart_url(workgroup, weeks, backlog_vals, open_vals)
+def build_page_html(workgroup, weeks, backlog_vals, open_vals, closed_vals):
+    chart_url = build_quickchart_url(workgroup, weeks, backlog_vals, open_vals, closed_vals)
 
     raw_rows = "".join(
-        f"<tr><td>{w}</td><td>{backlog_vals[i]}</td><td>{open_vals[i]}</td>"
-        f"<td><strong>{backlog_vals[i] + open_vals[i]}</strong></td></tr>"
+        f"<tr><td>{w}</td><td>{backlog_vals[i]}</td><td>{open_vals[i]}</td><td>{closed_vals[i]}</td>"
+        f"<td><strong>{backlog_vals[i] + open_vals[i] + closed_vals[i]}</strong></td></tr>"
         for i, w in enumerate(weeks)
     )
 
     return f"""
 <p>Auto-updated every Saturday by <a href="https://github.com/RenatoLapio-TomTom/MapEx-Jira-monitoring">MapEx Jira Monitoring</a>.<br/>
-<em>MAPEX issues with BACKLOG or OPEN status. Each bar = one week, stacked: orange = Backlog, blue = Open.</em></p>
+<em>MAPEX issues with BACKLOG, OPEN, or CLOSED status. Each bar = one week, stacked: orange = Backlog, blue = Open, green = Closed.</em></p>
 <h2>Trend Chart</h2>
 <p><ac:image ac:width="800"><ri:url ri:value="{chart_url}" /></ac:image></p>
 <h2>Raw Data</h2>
 <table><tbody>
-<tr><th>Week</th><th>Backlog</th><th>Open</th><th>Total</th></tr>
+<tr><th>Week</th><th>Backlog</th><th>Open</th><th>Closed</th><th>Total</th></tr>
 {raw_rows}
 </tbody></table>
 """
@@ -153,7 +158,9 @@ def main():
         with open(DATA_FILE, newline="") as f:
             for row in csv.DictReader(f):
                 wg_data[row["workgroup"]][row["week"]] = {
-                    "backlog": int(row["backlog"]), "open": int(row["open"])
+                    "backlog": int(row["backlog"] or 0),
+                    "open": int(row["open"] or 0),
+                    "closed": int(row.get("closed") or 0),
                 }
         print(f"Loaded historical data from {DATA_FILE}")
 
@@ -166,7 +173,11 @@ def main():
 
     iso_week = snapshot["week"]
     for wg, counts in snapshot["workgroups"].items():
-        wg_data[wg][iso_week] = counts
+        wg_data[wg][iso_week] = {
+            "backlog": int(counts.get("backlog", 0) or 0),
+            "open": int(counts.get("open", 0) or 0),
+            "closed": int(counts.get("closed", 0) or 0),
+        }
 
     workgroups = sorted(wg_data.keys())
     print(f"Workgroups: {workgroups}")
@@ -187,8 +198,9 @@ def main():
         weeks = sorted(wg_data[wg].keys())
         backlog_vals = [wg_data[wg][w]["backlog"] for w in weeks]
         open_vals    = [wg_data[wg][w]["open"]    for w in weeks]
+        closed_vals  = [wg_data[wg][w]["closed"]  for w in weeks]
         upsert_page(f"{wg} - MAPEX Trend",
-                    build_page_html(wg, weeks, backlog_vals, open_vals),
+                    build_page_html(wg, weeks, backlog_vals, open_vals, closed_vals),
                     parent_id=index_id)
 
     print("\nAll Confluence pages updated successfully.")
