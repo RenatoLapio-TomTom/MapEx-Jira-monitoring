@@ -108,3 +108,5 @@ def run(backfill_weeks=None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--backfill", type=str, help="Comma-separated week labels e.g. W28,W29,W30")
+    args = parser.parse_args()
+    run(backfill_weeks=args.backfill)
