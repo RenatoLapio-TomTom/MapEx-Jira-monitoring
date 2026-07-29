@@ -28,9 +28,9 @@ jobs:
 
       - name: Collect Jira data
         env:
-          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
-          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_BASE_URL: ${{ secrets.ATLASSIAN_URL }}
+          JIRA_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
         run: |
           if [ -n "${{ github.event.inputs.backfill_weeks }}" ]; then
             python scripts/collect_jira_data.py --backfill "${{ github.event.inputs.backfill_weeks }}"
@@ -40,9 +40,9 @@ jobs:
 
       - name: Update Confluence pages
         env:
-          CONFLUENCE_BASE_URL: ${{ secrets.CONFLUENCE_BASE_URL }}
-          CONFLUENCE_EMAIL: ${{ secrets.CONFLUENCE_EMAIL }}
-          CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          CONFLUENCE_BASE_URL: ${{ secrets.ATLASSIAN_URL }}
+          CONFLUENCE_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
+          CONFLUENCE_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
         run: python scripts/update_confluence.py
 
       - name: Commit updated CSV
