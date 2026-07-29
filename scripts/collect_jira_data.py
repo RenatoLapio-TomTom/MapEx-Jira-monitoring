@@ -38,8 +38,12 @@ auth = HTTPBasicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
 
 
 def count_issues(jql):
-    url = f"{JIRA_BASE_URL}/rest/api/3/search/jql/count"
-    payload = {"jql": jql}
+    url = f"{JIRA_BASE_URL}/rest/api/3/search/jql"
+    payload = {
+        "jql": jql,
+        "maxResults": 0,
+        "fields": [],
+    }
     response = requests.post(
         url,
         headers={
@@ -50,7 +54,8 @@ def count_issues(jql):
         json=payload,
     )
     response.raise_for_status()
-    return response.json().get("count", 0)
+    data = response.json()
+    return data.get("total", data.get("count", 0))
 
 
 def get_week_label():
