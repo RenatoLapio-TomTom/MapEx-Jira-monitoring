@@ -37,7 +37,6 @@ def count_issues(jql):
     url = f"{JIRA_BASE_URL}/rest/api/3/search"
     params = {"jql": jql, "maxResults": 1, "fields": "id"}
     response = requests.get(url, headers=headers, auth=auth, params=params)
-    response.raise_for_status()
     return response.json().get("total", 0)
 def get_week_label():
     today = datetime.today()
