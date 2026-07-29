@@ -14,19 +14,19 @@ headers = {"Accept": "application/json", "Content-Type": "application/json"}
 # Map workgroup name → Confluence page ID
 WORKGROUP_PAGE_IDS = {
     "Map Experts Lebanon": "2245001515",
-    "Map Experts Pune": "2245001516",
-    "Map Experts Gent": "2245001517",
-    "Map Experts Lodz": "2245001518",
-    "Map Experts Internal": "2245001519",
-    "LE - Africa": "2245001520",
-    "LE - Canada and USA": "2245001521",
-    "LE - Eastern Europe and Central Asia": "2245001522",
-    "LE - Mexico and Latin America": "2245001523",
-    "LE - North and Central Europe": "2245001524",
-    "LE - Northeast Asia": "2245001525",
-    "LE - South Asia and Middle East": "2245001526",
-    "LE - Southeast Asia and Oceania": "2245001527",
-    "LE - South West Europe": "2245001528",
+    "Map Experts Pune": "2244575432",
+    "Map Experts Gent": "2245230751",
+    "Map Experts Lodz": "2244542788",
+    "Map Experts Internal": "2245165286",
+    "LE - Africa": "2244182226",
+    "LE - Canada and USA": "2244247796",
+    "LE - Eastern Europe and Central Asia": "2245427391",
+    "LE - Mexico and Latin America": "2244477241",
+    "LE - North and Central Europe": "2245623979",
+    "LE - Northeast Asia": "2245394686",
+    "LE - South Asia and Middle East": "2245034207",
+    "LE - Southeast Asia and Oceania": "2244575409",
+    "LE - South West Europe": "2244378902",
 }
 def load_data():
     data = defaultdict(dict)  # data[workgroup][week] = {backlog, open}
