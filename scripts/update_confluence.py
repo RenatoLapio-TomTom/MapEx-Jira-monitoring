@@ -1,210 +1,153 @@
-#!/usr/bin/env python3
-"""
-update_confluence.py
-
-Reads latest_snapshot.json and weekly_snapshots.csv, then creates/updates
-one Confluence page per workgroup with a stacked bar chart image (via QuickChart.io)
-showing weekly Backlog + Open + Closed trends.
-"""
-
 import os
 import csv
 import json
-import base64
-import urllib.parse
 import requests
+from requests.auth import HTTPBasicAuth
 from collections import defaultdict
-from pathlib import Path
-
-EMAIL     = os.environ["ATLASSIAN_EMAIL"]
-TOKEN     = os.environ["ATLASSIAN_API_TOKEN"]
-BASE_URL  = os.environ["ATLASSIAN_BASE_URL"].rstrip("/")
-SPACE_KEY = os.environ["CONFLUENCE_SPACE_KEY"]
-
-CONF_API      = f"{BASE_URL}/wiki/rest/api"
-DATA_FILE     = Path("data/weekly_snapshots.csv")
-SNAPSHOT_FILE = Path("data/latest_snapshot.json")
-INDEX_TITLE   = "MAPEX Jira Workgroup Trends"
-
-_creds = base64.b64encode(f"{EMAIL}:{TOKEN}".encode()).decode()
-HEADERS = {
-    "Authorization": f"Basic {_creds}",
-    "Accept": "application/json",
-    "Content-Type": "application/json",
+# --- Config ---
+CONFLUENCE_BASE_URL = os.environ["CONFLUENCE_BASE_URL"]
+CONFLUENCE_EMAIL = os.environ["CONFLUENCE_EMAIL"]
+CONFLUENCE_API_TOKEN = os.environ["CONFLUENCE_API_TOKEN"]
+CSV_PATH = "data/weekly_snapshots.csv"
+auth = HTTPBasicAuth(CONFLUENCE_EMAIL, CONFLUENCE_API_TOKEN)
+headers = {"Accept": "application/json", "Content-Type": "application/json"}
+# Map workgroup name → Confluence page ID
+WORKGROUP_PAGE_IDS = {
+    "Map Experts Lebanon": "2245001515",
+    "Map Experts Pune": "2245001516",
+    "Map Experts Gent": "2245001517",
+    "Map Experts Lodz": "2245001518",
+    "Map Experts Internal": "2245001519",
+    "LE - Africa": "2245001520",
+    "LE - Canada and USA": "2245001521",
+    "LE - Eastern Europe and Central Asia": "2245001522",
+    "LE - Mexico and Latin America": "2245001523",
+    "LE - North and Central Europe": "2245001524",
+    "LE - Northeast Asia": "2245001525",
+    "LE - South Asia and Middle East": "2245001526",
+    "LE - Southeast Asia and Oceania": "2245001527",
+    "LE - South West Europe": "2245001528",
 }
-
-
-def get_page(title):
-    resp = requests.get(f"{CONF_API}/content",
-        params={"spaceKey": SPACE_KEY, "title": title, "expand": "version"},
-        headers=HEADERS)
-    print(f"  GET content '{title}' -> HTTP {resp.status_code}")
-    resp.raise_for_status()
-    results = resp.json().get("results", [])
-    return results[0] if results else None
-
-
-def create_page(title, body_html, parent_id=None):
-    payload = {
-        "type": "page", "title": title,
-        "space": {"key": SPACE_KEY},
-        "body": {"storage": {"value": body_html, "representation": "storage"}},
-    }
-    if parent_id:
-        payload["ancestors"] = [{"id": parent_id}]
-    resp = requests.post(f"{CONF_API}/content", headers=HEADERS, data=json.dumps(payload))
-    print(f"  POST content '{title}' -> HTTP {resp.status_code}")
-    if not resp.ok:
-        print(f"  Response: {resp.text[:300]}")
-    resp.raise_for_status()
-    return resp.json()
-
-
-def update_page(page_id, version, title, body_html):
-    payload = {
-        "type": "page", "title": title,
-        "version": {"number": version + 1},
-        "body": {"storage": {"value": body_html, "representation": "storage"}},
-    }
-    resp = requests.put(f"{CONF_API}/content/{page_id}", headers=HEADERS, data=json.dumps(payload))
-    print(f"  PUT content '{title}' -> HTTP {resp.status_code}")
-    if not resp.ok:
-        print(f"  Response: {resp.text[:300]}")
-    resp.raise_for_status()
-    return resp.json()
-
-
-def upsert_page(title, body_html, parent_id=None):
-    existing = get_page(title)
-    if existing:
-        result = update_page(existing["id"], existing["version"]["number"], title, body_html)
-        print(f"  Updated: '{title}'")
-        return result
-    else:
-        result = create_page(title, body_html, parent_id)
-        print(f"  Created: '{title}'")
-        return result
-
-
-def build_quickchart_url(workgroup, weeks, backlog_vals, open_vals, closed_vals):
-    """Build a QuickChart.io URL for a stacked bar chart."""
-    chart_config = {
-        "type": "bar",
-        "data": {
-            "labels": weeks,
-            "datasets": [
-                {
-                    "label": "Backlog",
-                    "data": backlog_vals,
-                    "backgroundColor": "#FF8C00",
-                },
-                {
-                    "label": "Open",
-                    "data": open_vals,
-                    "backgroundColor": "#1F7BC0",
-                },
-                {
-                    "label": "Closed",
-                    "data": closed_vals,
-                    "backgroundColor": "#28A745",
-                },
-            ],
-        },
-        "options": {
-            "title": {
-                "display": True,
-                "text": f"{workgroup} - Weekly BACKLOG, OPEN & CLOSED Trend",
-            },
-            "scales": {
-                "xAxes": [{"stacked": True}],
-                "yAxes": [{"stacked": True, "ticks": {"beginAtZero": True}}],
-            },
-            "legend": {"position": "bottom"},
-        },
-    }
-    chart_json = json.dumps(chart_config, separators=(",", ":"))
-    encoded = urllib.parse.quote(chart_json)
-    return f"https://quickchart.io/chart?c={encoded}&width=800&height=400&backgroundColor=white"
-
-
-def build_page_html(workgroup, weeks, backlog_vals, open_vals, closed_vals):
-    chart_url = build_quickchart_url(workgroup, weeks, backlog_vals, open_vals, closed_vals)
-
-    raw_rows = "".join(
-        f"<tr><td>{w}</td><td>{backlog_vals[i]}</td><td>{open_vals[i]}</td><td>{closed_vals[i]}</td>"
-        f"<td><strong>{backlog_vals[i] + open_vals[i] + closed_vals[i]}</strong></td></tr>"
-        for i, w in enumerate(weeks)
-    )
-
+def load_data():
+    data = defaultdict(dict)  # data[workgroup][week] = {backlog, open}
+    with open(CSV_PATH, newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            wg = row["workgroup"]
+            week = row["week"]
+            data[wg][week] = {
+                "backlog": int(row["backlog"]),
+                "open": int(row["open"]),
+            }
+    return data
+def build_chart_html(workgroup, weeks_data):
+    weeks = sorted(weeks_data.keys())
+    backlog_vals = [weeks_data[w]["backlog"] for w in weeks]
+    open_vals = [weeks_data[w]["open"] for w in weeks]
+    labels = json.dumps(weeks)
+    backlog_data = json.dumps(backlog_vals)
+    open_data = json.dumps(open_vals)
     return f"""
-<p>Auto-updated every Saturday by <a href="https://github.com/RenatoLapio-TomTom/MapEx-Jira-monitoring">MapEx Jira Monitoring</a>.<br/>
-<em>MAPEX issues with BACKLOG, OPEN, or CLOSED status. Each bar = one week, stacked: orange = Backlog, blue = Open, green = Closed.</em></p>
-<h2>Trend Chart</h2>
-<p><ac:image ac:width="800"><ri:url ri:value="{chart_url}" /></ac:image></p>
-<h2>Raw Data</h2>
-<table><tbody>
-<tr><th>Week</th><th>Backlog</th><th>Open</th><th>Closed</th><th>Total</th></tr>
-{raw_rows}
-</tbody></table>
+<canvas id="chart_{workgroup.replace(' ', '_').replace('-', '_')}" width="700" height="350"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById('chart_{workgroup.replace(' ', '_').replace('-', '_')}'), {{
+  type: 'bar',
+  data: {{
+    labels: {labels},
+    datasets: [
+      {{
+        label: 'Backlog',
+        data: {backlog_data},
+        backgroundColor: 'rgba(255, 159, 64, 0.8)'
+      }},
+      {{
+        label: 'Open',
+        data: {open_data},
+        backgroundColor: 'rgba(54, 162, 235, 0.8)'
+      }}
+    ]
+  }},
+  options: {{
+    responsive: true,
+    plugins: {{
+      title: {{
+        display: true,
+        text: 'Weekly BACKLOG & OPEN Trend — {workgroup}'
+      }},
+      legend: {{ position: 'top' }}
+    }},
+    scales: {{
+      x: {{ stacked: true }},
+      y: {{ stacked: true, beginAtZero: true }}
+    }}
+  }}
+}});
+</script>
 """
-
-
-def main():
-    print(f"\n=== Updating Confluence (space: {SPACE_KEY}) ===")
-    print(f"Confluence API: {CONF_API}")
-
-    wg_data = defaultdict(dict)
-    if DATA_FILE.exists() and DATA_FILE.stat().st_size > 0:
-        with open(DATA_FILE, newline="") as f:
-            for row in csv.DictReader(f):
-                wg_data[row["workgroup"]][row["week"]] = {
-                    "backlog": int(row["backlog"] or 0),
-                    "open": int(row["open"] or 0),
-                    "closed": int(row.get("closed") or 0),
-                }
-        print(f"Loaded historical data from {DATA_FILE}")
-
-    if not SNAPSHOT_FILE.exists():
-        print(f"ERROR: {SNAPSHOT_FILE} not found.")
-        raise SystemExit(1)
-
-    with open(SNAPSHOT_FILE) as f:
-        snapshot = json.load(f)
-
-    iso_week = snapshot["week"]
-    for wg, counts in snapshot["workgroups"].items():
-        wg_data[wg][iso_week] = {
-            "backlog": int(counts.get("backlog", 0) or 0),
-            "open": int(counts.get("open", 0) or 0),
-            "closed": int(counts.get("closed", 0) or 0),
+def build_table_html(weeks_data):
+    weeks = sorted(weeks_data.keys())
+    rows = ""
+    for w in weeks:
+        b = weeks_data[w]["backlog"]
+        o = weeks_data[w]["open"]
+        total = b + o
+        rows += f"<tr><td>{w}</td><td>{b}</td><td>{o}</td><td><strong>{total}</strong></td></tr>"
+    return f"""
+<table>
+  <thead>
+    <tr>
+      <th>Week</th>
+      <th>Backlog</th>
+      <th>Open</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rows}
+  </tbody>
+</table>
+"""
+def update_page(page_id, workgroup, weeks_data):
+    # Get current page version
+    url = f"{CONFLUENCE_BASE_URL}/rest/api/content/{page_id}?expand=version,body.storage"
+    response = requests.get(url, headers=headers, auth=auth)
+    response.raise_for_status()
+    page = response.json()
+    version = page["version"]["number"]
+    title = page["title"]
+    chart_html = build_chart_html(workgroup, weeks_data)
+    table_html = build_table_html(weeks_data)
+    new_body = f"""
+<h2>Weekly Backlog &amp; Open Trend</h2>
+{chart_html}
+<h2>Raw Data</h2>
+{table_html}
+"""
+    payload = {
+        "version": {"number": version + 1},
+        "title": title,
+        "type": "page",
+        "body": {
+            "storage": {
+                "value": new_body,
+                "representation": "storage"
+            }
         }
-
-    workgroups = sorted(wg_data.keys())
-    print(f"Workgroups: {workgroups}")
-
-    if not workgroups:
-        print("No workgroups found — nothing to publish.")
-        return
-
-    # Index page
-    index_html = "<p>Auto-generated index of MAPEX workgroup trend pages.</p><ul>" + \
-        "".join(f'<li><ac:link><ri:page ri:content-title="{wg} - MAPEX Trend" /></ac:link></li>' for wg in workgroups) + \
-        "</ul>"
-    index_page = upsert_page(INDEX_TITLE, index_html)
-    index_id = index_page.get("id") or get_page(INDEX_TITLE)["id"]
-
-    # One page per workgroup
-    for wg in workgroups:
-        weeks = sorted(wg_data[wg].keys())
-        backlog_vals = [wg_data[wg][w]["backlog"] for w in weeks]
-        open_vals    = [wg_data[wg][w]["open"]    for w in weeks]
-        closed_vals  = [wg_data[wg][w]["closed"]  for w in weeks]
-        upsert_page(f"{wg} - MAPEX Trend",
-                    build_page_html(wg, weeks, backlog_vals, open_vals, closed_vals),
-                    parent_id=index_id)
-
-    print("\nAll Confluence pages updated successfully.")
-
-
+    }
+    put_url = f"{CONFLUENCE_BASE_URL}/rest/api/content/{page_id}"
+    put_response = requests.put(put_url, headers=headers, auth=auth, json=payload)
+    put_response.raise_for_status()
+    print(f"  ✅ Updated: {workgroup} (page {page_id})")
+def run():
+    data = load_data()
+    for workgroup, weeks_data in data.items():
+        page_id = WORKGROUP_PAGE_IDS.get(workgroup)
+        if not page_id:
+            print(f"  ⚠️ No page ID configured for: {workgroup} — skipping")
+            continue
+        print(f"Updating {workgroup}...")
+        update_page(page_id, workgroup, weeks_data)
+    print("✅ All Confluence pages updated.")
 if __name__ == "__main__":
-    main()
+    run()
