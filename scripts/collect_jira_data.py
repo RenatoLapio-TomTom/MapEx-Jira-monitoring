@@ -62,6 +62,7 @@ def load_existing_csv():
             for row in reader:
                 # Strip old 'closed' column if present
                 row.pop("closed", None)
+                row.pop("date", None)
                 rows.append(row)
     return rows
 def save_csv(rows):
