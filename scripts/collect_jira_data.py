@@ -60,7 +60,10 @@ def load_existing_csv():
         with open(CSV_PATH, newline="") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                # Strip old 'closed' column if present
+                # Skip rows that don't have the 'week' column
+                if "week" not in row:
+                    continue
+                # Strip old columns if present
                 row.pop("closed", None)
                 row.pop("date", None)
                 rows.append(row)
