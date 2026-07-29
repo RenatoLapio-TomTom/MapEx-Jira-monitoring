@@ -2,7 +2,7 @@ name: Jira Weekly Monitoring
 
 on:
   schedule:
-    - cron: "0 18 * * 6"  # Every Saturday at 20:00 CET (18:00 UTC)
+    - cron: "0 18 * * 6"
   workflow_dispatch:
     inputs:
       backfill_weeks:
@@ -13,7 +13,6 @@ on:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
