@@ -1,7 +1,7 @@
 import os
 import csv
 import argparse
-from datetime import datetime, timedelta
+from datetime import datetime
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -36,7 +36,7 @@ BACKFILL_DATES = {
 }
 
 auth = HTTPBasicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
-headers = {"Accept": "application/json"}
+
 
 def count_issues(jql):
     url = f"{JIRA_BASE_URL}/rest/api/3/search/jql/count"
@@ -45,17 +45,16 @@ def count_issues(jql):
         url,
         headers={"Accept": "application/json", "Content-Type": "application/json"},
         auth=auth,
-        json=payload
+        json=payload,
     )
     response.raise_for_status()
     return response.json().get("count", 0)
-    )
-    response.raise_for_status()
-    return response.json().get("total", 0)
+
 
 def get_week_label():
     today = datetime.today()
     return f"W{today.isocalendar()[1]}"
+
 
 def get_snapshot(workgroup, snapshot_date=None):
     wg = workgroup.replace('"', '\\"')
@@ -68,6 +67,7 @@ def get_snapshot(workgroup, snapshot_date=None):
     backlog = count_issues(backlog_jql)
     open_count = count_issues(open_jql)
     return backlog, open_count
+
 
 def load_existing_csv():
     rows = []
@@ -82,6 +82,7 @@ def load_existing_csv():
                 rows.append(row)
     return rows
 
+
 def save_csv(rows):
     os.makedirs("data", exist_ok=True)
     fieldnames = ["week", "workgroup", "backlog", "open"]
@@ -89,6 +90,7 @@ def save_csv(rows):
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+
 
 def run(backfill_weeks=None):
     existing_rows = load_existing_csv()
@@ -113,8 +115,7 @@ def run(backfill_weeks=None):
     save_csv(existing_rows)
     print("✅ CSV saved.")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--backfill", type=str, help="Comma-separated week labels e.g. W28,W29,W30")
-    args = parser.parse_args()
-    run(backfill_weeks=args.backfill)
+    parser.add_argument("--backfill", type=str, help="Comma-separated week
