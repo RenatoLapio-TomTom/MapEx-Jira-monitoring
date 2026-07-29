@@ -28,7 +28,6 @@ WORKGROUPS = [
     "LE - South West Europe",
 ]
 
-# ISO week → snapshot date (Saturday of that week)
 BACKFILL_DATES = {
     "W28": "2026-07-11",
     "W29": "2026-07-18",
@@ -43,7 +42,10 @@ def count_issues(jql):
     payload = {"jql": jql}
     response = requests.post(
         url,
-        headers={"Accept": "application/json", "Content-Type": "application/json"},
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
         auth=auth,
         json=payload,
     )
@@ -59,8 +61,14 @@ def get_week_label():
 def get_snapshot(workgroup, snapshot_date=None):
     wg = workgroup.replace('"', '\\"')
     if snapshot_date:
-        backlog_jql = f'project = MAPEX AND status WAS "Backlog" ON "{snapshot_date}" AND cf[10521] = "{wg}"'
-        open_jql = f'project = MAPEX AND status WAS "Open" ON "{snapshot_date}" AND cf[10521] = "{wg}"'
+        backlog_jql = (
+            f'project = MAPEX AND status WAS "Backlog" ON "{snapshot_date}"'
+            f' AND cf[10521] = "{wg}"'
+        )
+        open_jql = (
+            f'project = MAPEX AND status WAS "Open" ON "{snapshot_date}"'
+            f' AND cf[10521] = "{wg}"'
+        )
     else:
         backlog_jql = f'project = MAPEX AND status = "Backlog" AND cf[10521] = "{wg}"'
         open_jql = f'project = MAPEX AND status = "Open" AND cf[10521] = "{wg}"'
@@ -116,8 +124,12 @@ def run(backfill_weeks=None):
     print("✅ CSV saved.")
 
 
- if __name__ == "__main__":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--backfill", type=str, help="Comma-separated week labels e.g. W28,W29,W30")
+    parser.add_argument(
+        "--backfill",
+        type=str,
+        help="Comma-separated week labels e.g. W28,W29,W30",
+    )
     args = parser.parse_args()
     run(backfill_weeks=args.backfill)
