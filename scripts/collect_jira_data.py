@@ -39,13 +39,16 @@ auth = HTTPBasicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
 headers = {"Accept": "application/json"}
 
 def count_issues(jql):
-    url = f"{JIRA_BASE_URL}/rest/api/3/search/jql"
-    payload = {"jql": jql, "maxResults": 1, "fields": ["key"]}
+    url = f"{JIRA_BASE_URL}/rest/api/3/search/jql/count"
+    payload = {"jql": jql}
     response = requests.post(
         url,
         headers={"Accept": "application/json", "Content-Type": "application/json"},
         auth=auth,
         json=payload
+    )
+    response.raise_for_status()
+    return response.json().get("count", 0)
     )
     response.raise_for_status()
     return response.json().get("total", 0)
