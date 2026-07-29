@@ -39,7 +39,7 @@ auth = HTTPBasicAuth(JIRA_EMAIL, JIRA_API_TOKEN)
 headers = {"Accept": "application/json"}
 
 def count_issues(jql):
-    url = f"{JIRA_BASE_URL}/rest/api/3/search"
+    url = f"{JIRA_BASE_URL}/rest/api/3/search/jql"
     params = {"jql": jql, "maxResults": 1, "fields": "id"}
     response = requests.get(url, headers=headers, auth=auth, params=params)
     response.raise_for_status()
