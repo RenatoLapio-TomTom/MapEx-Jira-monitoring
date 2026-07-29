@@ -36,8 +36,8 @@ def load_data():
             wg = row["workgroup"]
             week = row["week"]
             data[wg][week] = {
-                "backlog": int(row["backlog"]),
-                "open": int(row["open"]),
+                "backlog": int(row["backlog"]) if row.get("backlog", "").strip() else 0,
+                "open": int(row["open"]) if row.get("open", "").strip() else 0,
             }
     return data
 def build_chart_html(workgroup, weeks_data):
