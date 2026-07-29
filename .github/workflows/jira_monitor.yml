@@ -30,9 +30,9 @@ jobs:
 
       - name: Collect Jira data
         env:
-          JIRA_BASE_URL: ${{ secrets.ATLASSIAN_BASE_URL }}
-          JIRA_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
-          JIRA_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
+          ATLASSIAN_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          ATLASSIAN_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          ATLASSIAN_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
         run: |
           if [ -n "${{ github.event.inputs.backfill_weeks }}" ]; then
             python scripts/collect_jira_data.py --backfill "${{ github.event.inputs.backfill_weeks }}"
