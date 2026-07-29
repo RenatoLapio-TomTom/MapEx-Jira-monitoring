@@ -9,7 +9,8 @@ on:
         description: "Weeks to backfill (e.g. W28,W29,W30) — leave empty for current week"
         required: false
         default: ""
-        permissions:
+
+permissions:
   contents: write
 
 jobs:
