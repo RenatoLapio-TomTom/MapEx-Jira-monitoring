@@ -74,16 +74,16 @@ def generate_chart(workgroup, weeks_data):
     for i in range(len(weeks)):
         if backlog_vals[i] > 0:
             ax.text(x[i], backlog_vals[i] / 2, str(backlog_vals[i]),
-                    ha="center", va="center", fontweight="bold", fontsize=8, color="white")
+                    ha="center", va="center", fontweight="bold", fontsize=12, color="white")
         if open_vals[i] > 0:
             ax.text(x[i], backlog_vals[i] + open_vals[i] / 2, str(open_vals[i]),
-                    ha="center", va="center", fontweight="bold", fontsize=8, color="white")
+                    ha="center", va="center", fontweight="bold", fontsize=12, color="white")
 
     ax.set_xlabel("Week")
     ax.set_ylabel("Issue Count")
     ax.set_title(f"Weekly BACKLOG & OPEN Trend — {workgroup}")
     ax.set_xticks(x[:len(weeks)])
-    ax.set_xticklabels(weeks, rotation=45, ha="right", fontsize=8)
+    ax.set_xticklabels(weeks, rotation=45, ha="right", fontsize=12)
     ax.set_xlim(-0.5, 15.5)  # fixed x range for 16 slots
     ax.legend(loc="upper right")
     ax.set_ylim(0, max((b + o for b, o in zip(backlog_vals, open_vals)), default=10) * 1.15)
