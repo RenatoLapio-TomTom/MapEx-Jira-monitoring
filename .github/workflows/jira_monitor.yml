@@ -37,3 +37,18 @@ jobs:
           else
             python scripts/collect_jira_data.py
           fi
+
+      - name: Update Confluence pages
+        env:
+          CONFLUENCE_BASE_URL: ${{ secrets.ATLASSIAN_BASE_URL }}/wiki
+          CONFLUENCE_EMAIL: ${{ secrets.ATLASSIAN_EMAIL }}
+          CONFLUENCE_API_TOKEN: ${{ secrets.ATLASSIAN_API_TOKEN }}
+        run: python scripts/update_confluence.py
+
+      - name: Commit updated CSV
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/weekly_snapshots.csv data/latest_snapshot.json
+          git diff --staged --quiet || git commit -m "Weekly Jira snapshot - $(date +'%Y-W%V')"
+          git push
