@@ -1,101 +1,70 @@
 {
   "week": "2026-W31",
-  "date": "2026-07-29",
+  "date": "2026-08-01",
   "workgroups": {
     "Content Ops": {
       "backlog": 0,
-      "open": 1,
-      "closed": 417
+      "open": 1
     },
     "LE - Africa": {
-      "backlog": 17,
-      "open": 6,
-      "closed": 64
+      "backlog": 18,
+      "open": 5
     },
     "LE - Canada and USA": {
-      "backlog": 10,
-      "open": 16,
-      "closed": 152
-    },
-    "LE - East Asia and Pacific": {
-      "backlog": 0,
-      "open": 0,
-      "closed": 2
+      "backlog": 16,
+      "open": 13
     },
     "LE - Eastern Europe and Central Asia": {
-      "backlog": 7,
-      "open": 21,
-      "closed": 179
+      "backlog": 11,
+      "open": 19
     },
     "LE - Mexico and Latin America": {
-      "backlog": 11,
-      "open": 8,
-      "closed": 127
+      "backlog": 12,
+      "open": 8
     },
     "LE - North and Central Europe": {
-      "backlog": 52,
-      "open": 51,
-      "closed": 361
+      "backlog": 56,
+      "open": 49
     },
     "LE - Northeast Asia": {
-      "backlog": 21,
-      "open": 5,
-      "closed": 145
+      "backlog": 20,
+      "open": 5
     },
     "LE - South Asia and Middle East": {
-      "backlog": 32,
-      "open": 27,
-      "closed": 104
+      "backlog": 33,
+      "open": 28
     },
     "LE - South West Europe": {
       "backlog": 17,
-      "open": 10,
-      "closed": 180
+      "open": 12
     },
     "LE - Southeast Asia and Oceania": {
-      "backlog": 14,
-      "open": 9,
-      "closed": 157
+      "backlog": 27,
+      "open": 6
     },
     "Map Experts Gent": {
       "backlog": 5,
-      "open": 10,
-      "closed": 870
+      "open": 0
     },
     "Map Experts Internal": {
-      "backlog": 34,
-      "open": 13,
-      "closed": 100
-    },
-    "Map Experts LCC": {
-      "backlog": 0,
-      "open": 0,
-      "closed": 21
+      "backlog": 35,
+      "open": 13
     },
     "Map Experts Lebanon": {
-      "backlog": 82,
-      "open": 32,
-      "closed": 1072
+      "backlog": 74,
+      "open": 28
     },
     "Map Experts Lodz": {
-      "backlog": 6,
-      "open": 0,
-      "closed": 2454
+      "backlog": 5,
+      "open": 0
     },
     "Map Experts Pune": {
-      "backlog": 27,
-      "open": 5,
-      "closed": 2375
-    },
-    "Sourcing Ops": {
-      "backlog": 0,
-      "open": 0,
-      "closed": 5
+      "backlog": 24,
+      "open": 3
     },
     "Unassigned": {
-      "backlog": 44,
-      "open": 2,
-      "closed": 809
+      "backlog": 46,
+      "open": 3
     }
   }
 }
