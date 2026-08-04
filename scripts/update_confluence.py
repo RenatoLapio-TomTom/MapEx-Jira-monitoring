@@ -63,9 +63,9 @@ def generate_chart(workgroup, weeks_data):
     open_vals = [weeks_data[w]["open"] for w in weeks]
 
     x = np.arange(16)  # always 16 slots on x-axis
-    width = 0.35        # thinner bars, closer together
+    width = 0.55        # thinner bars, closer together
 
-    fig, ax = plt.subplots(figsize=(10, 5))  # fixed width always
+    fig, ax = plt.subplots(figsize=(15, 5))  # fixed width always
 
     bars_backlog = ax.bar(x[:len(weeks)], backlog_vals, width, label="Backlog", color="#FF9F40")
     bars_open = ax.bar(x[:len(weeks)], open_vals, width, bottom=backlog_vals, label="Open", color="#36A2EB")
@@ -169,7 +169,7 @@ def update_page(page_id, workgroup, weeks_data):
     table_html = build_table_html(weeks_data)
     new_body = f"""
 <h2>Weekly Backlog &amp; Open Trend</h2>
-<ac:image ac:width="700"><ri:attachment ri:filename="{chart_filename}" /></ac:image>
+<ac:image ac:width="900"><ri:attachment ri:filename="{chart_filename}" /></ac:image>
 <h2>Raw Data</h2>
 {table_html}
 """
