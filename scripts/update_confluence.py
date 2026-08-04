@@ -54,35 +54,39 @@ def load_data():
 def generate_chart(workgroup, weeks_data):
     """Generate a stacked bar chart as PNG bytes."""
     weeks = sorted(weeks_data.keys())
+
+    # Rolling window: last 16 weeks only
+    if len(weeks) > 16:
+        weeks = weeks[-16:]
+
     backlog_vals = [weeks_data[w]["backlog"] for w in weeks]
     open_vals = [weeks_data[w]["open"] for w in weeks]
 
-    x = np.arange(len(weeks))
-    width = 0.5
+    x = np.arange(16)  # always 16 slots on x-axis
+    width = 0.35        # thinner bars, closer together
 
-    fig, ax = plt.subplots(figsize=(max(8, len(weeks) * 1.2), 5))
+    fig, ax = plt.subplots(figsize=(10, 5))  # fixed width always
 
-    bars_backlog = ax.bar(x, backlog_vals, width, label="Backlog", color="#FF9F40")
-    bars_open = ax.bar(x, open_vals, width, bottom=backlog_vals, label="Open", color="#36A2EB")
+    bars_backlog = ax.bar(x[:len(weeks)], backlog_vals, width, label="Backlog", color="#FF9F40")
+    bars_open = ax.bar(x[:len(weeks)], open_vals, width, bottom=backlog_vals, label="Open", color="#36A2EB")
 
     # Add value labels inside bars
     for i in range(len(weeks)):
-        # Backlog label (bottom segment)
         if backlog_vals[i] > 0:
             ax.text(x[i], backlog_vals[i] / 2, str(backlog_vals[i]),
-                    ha="center", va="center", fontweight="bold", fontsize=9, color="white")
-        # Open label (top segment)
+                    ha="center", va="center", fontweight="bold", fontsize=8, color="white")
         if open_vals[i] > 0:
             ax.text(x[i], backlog_vals[i] + open_vals[i] / 2, str(open_vals[i]),
-                    ha="center", va="center", fontweight="bold", fontsize=9, color="white")
+                    ha="center", va="center", fontweight="bold", fontsize=8, color="white")
 
     ax.set_xlabel("Week")
     ax.set_ylabel("Issue Count")
     ax.set_title(f"Weekly BACKLOG & OPEN Trend — {workgroup}")
-    ax.set_xticks(x)
-    ax.set_xticklabels(weeks, rotation=45, ha="right")
+    ax.set_xticks(x[:len(weeks)])
+    ax.set_xticklabels(weeks, rotation=45, ha="right", fontsize=8)
+    ax.set_xlim(-0.5, 15.5)  # fixed x range for 16 slots
     ax.legend(loc="upper right")
-    ax.set_ylim(0, max(b + o for b, o in zip(backlog_vals, open_vals)) * 1.15 or 10)
+    ax.set_ylim(0, max((b + o for b, o in zip(backlog_vals, open_vals)), default=10) * 1.15)
 
     plt.tight_layout()
 
