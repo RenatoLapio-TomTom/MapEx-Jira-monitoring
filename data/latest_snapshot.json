@@ -1,66 +1,66 @@
 {
-  "week": "2026-W33",
-  "date": "2026-08-15",
+  "week": "2026-W34",
+  "date": "2026-08-22",
   "workgroups": {
     "LE - Africa": {
-      "backlog": 28,
-      "open": 9
+      "backlog": 23,
+      "open": 13
     },
     "LE - Canada and USA": {
-      "backlog": 30,
-      "open": 15
+      "backlog": 31,
+      "open": 25
     },
     "LE - Eastern Europe and Central Asia": {
       "backlog": 10,
-      "open": 26
+      "open": 18
     },
     "LE - Mexico and Latin America": {
-      "backlog": 6,
-      "open": 16
+      "backlog": 7,
+      "open": 9
     },
     "LE - North and Central Europe": {
-      "backlog": 54,
-      "open": 49
+      "backlog": 50,
+      "open": 55
     },
     "LE - Northeast Asia": {
-      "backlog": 28,
-      "open": 5
+      "backlog": 33,
+      "open": 2
     },
     "LE - South Asia and Middle East": {
-      "backlog": 32,
-      "open": 26
+      "backlog": 30,
+      "open": 27
     },
     "LE - South West Europe": {
-      "backlog": 39,
-      "open": 8
+      "backlog": 31,
+      "open": 10
     },
     "LE - Southeast Asia and Oceania": {
       "backlog": 20,
-      "open": 10
+      "open": 11
     },
     "Map Experts Gent": {
-      "backlog": 14,
-      "open": 66
+      "backlog": 15,
+      "open": 72
     },
     "Map Experts Internal": {
-      "backlog": 29,
+      "backlog": 30,
       "open": 11
     },
     "Map Experts Lebanon": {
-      "backlog": 87,
-      "open": 106
+      "backlog": 89,
+      "open": 102
     },
     "Map Experts Lodz": {
-      "backlog": 3,
-      "open": 1
+      "backlog": 2,
+      "open": 3
     },
     "Map Experts Pune": {
-      "backlog": 49,
-      "open": 4
+      "backlog": 54,
+      "open": 29
     },
     "Unassigned": {
       "backlog": 32,
-      "open": 16
+      "open": 21
     }
   }
 }
