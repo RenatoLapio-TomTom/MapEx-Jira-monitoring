@@ -1,70 +1,70 @@
 {
-  "week": "2026-W37",
-  "date": "2026-09-12",
+  "week": "2026-W38",
+  "date": "2026-09-19",
   "workgroups": {
     "LE - Africa": {
-      "backlog": 15,
-      "open": 10
-    },
-    "LE - Canada and USA": {
-      "backlog": 19,
-      "open": 66
-    },
-    "LE - Eastern Europe and Central Asia": {
-      "backlog": 14,
-      "open": 10
-    },
-    "LE - Mexico and Latin America": {
-      "backlog": 3,
+      "backlog": 9,
       "open": 6
     },
+    "LE - Canada and USA": {
+      "backlog": 5,
+      "open": 78
+    },
+    "LE - Eastern Europe and Central Asia": {
+      "backlog": 3,
+      "open": 1
+    },
+    "LE - Mexico and Latin America": {
+      "backlog": 1,
+      "open": 2
+    },
     "LE - North and Central Europe": {
-      "backlog": 30,
+      "backlog": 37,
       "open": 70
     },
     "LE - Northeast Asia": {
-      "backlog": 25,
-      "open": 2
+      "backlog": 24,
+      "open": 1
     },
     "LE - South Asia and Middle East": {
-      "backlog": 27,
-      "open": 25
+      "backlog": 25,
+      "open": 17
     },
     "LE - South West Europe": {
-      "backlog": 29,
-      "open": 8
+      "backlog": 25,
+      "open": 6
     },
     "LE - Southeast Asia and Oceania": {
-      "backlog": 19,
-      "open": 12
+      "backlog": 20,
+      "open": 10
     },
     "Map Experts Gent": {
       "backlog": 16,
-      "open": 77
+      "open": 72
     },
     "Map Experts Internal": {
-      "backlog": 37,
-      "open": 13
+      "backlog": 33,
+      "open": 11
     },
     "Map Experts LCC": {
       "backlog": 1,
       "open": 0
     },
     "Map Experts Lebanon": {
-      "backlog": 86,
-      "open": 122
+      "backlog": 81,
+      "open": 125
     },
     "Map Experts Lodz": {
-      "backlog": 10,
-      "open": 21
+      "backlog": 4,
+      "open": 26
     },
     "Map Experts Pune": {
-      "backlog": 47,
-      "open": 31
+      "backlog": 43,
+      "open": 25
     },
     "Unassigned": {
-      "backlog": 26,
-      "open": 26
+      "backlog": 28,
+      "open": 36
     }
   }
 }
