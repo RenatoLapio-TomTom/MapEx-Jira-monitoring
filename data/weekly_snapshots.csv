@@ -1,171 +1,187 @@
-week,date,workgroup,backlog,open
-2026-W28,2026-07-11,LE - Africa,17,8
-2026-W28,2026-07-11,LE - Canada and USA,28,14
-2026-W28,2026-07-11,LE - Eastern Europe and Central Asia,17,31
-2026-W28,2026-07-11,LE - Mexico and Latin America,18,11
-2026-W28,2026-07-11,LE - North and Central Europe,40,50
-2026-W28,2026-07-11,LE - Northeast Asia,24,8
-2026-W28,2026-07-11,LE - South Asia and Middle East,42,21
-2026-W28,2026-07-11,LE - South West Europe,27,6
-2026-W28,2026-07-11,LE - Southeast Asia and Oceania,21,9
-2026-W28,2026-07-11,Map Experts Gent,5,0
-2026-W28,2026-07-11,Map Experts Internal,37,11
-2026-W28,2026-07-11,Map Experts Lebanon,79,38
-2026-W28,2026-07-11,Map Experts Lodz,2,4
-2026-W28,2026-07-11,Map Experts Pune,44,2
-2026-W28,2026-07-11,Unassigned,14,13
-2026-W29,2026-07-18,LE - Africa,18,7
-2026-W29,2026-07-18,LE - Canada and USA,13,14
-2026-W29,2026-07-18,LE - Eastern Europe and Central Asia,2,34
-2026-W29,2026-07-18,LE - Mexico and Latin America,15,10
-2026-W29,2026-07-18,LE - North and Central Europe,30,53
-2026-W29,2026-07-18,LE - Northeast Asia,25,5
-2026-W29,2026-07-18,LE - South Asia and Middle East,34,26
-2026-W29,2026-07-18,LE - South West Europe,14,5
-2026-W29,2026-07-18,LE - Southeast Asia and Oceania,17,8
-2026-W29,2026-07-18,Map Experts Gent,7,1
-2026-W29,2026-07-18,Map Experts Internal,41,12
-2026-W29,2026-07-18,Map Experts Lebanon,71,33
-2026-W29,2026-07-18,Map Experts Lodz,5,1
-2026-W29,2026-07-18,Map Experts Pune,42,2
-2026-W29,2026-07-18,Unassigned,11,6
-2026-W30,2026-07-25,LE - Africa,18,5
-2026-W30,2026-07-25,LE - Canada and USA,13,14
-2026-W30,2026-07-25,LE - Eastern Europe and Central Asia,10,21
-2026-W30,2026-07-25,LE - Mexico and Latin America,10,11
-2026-W30,2026-07-25,LE - North and Central Europe,35,57
-2026-W30,2026-07-25,LE - Northeast Asia,21,6
-2026-W30,2026-07-25,LE - South Asia and Middle East,31,27
-2026-W30,2026-07-25,LE - South West Europe,18,10
-2026-W30,2026-07-25,LE - Southeast Asia and Oceania,15,6
-2026-W30,2026-07-25,Map Experts Gent,5,2
-2026-W30,2026-07-25,Map Experts Internal,36,12
-2026-W30,2026-07-25,Map Experts Lebanon,75,29
-2026-W30,2026-07-25,Map Experts Lodz,4,0
-2026-W30,2026-07-25,Map Experts Pune,28,2
-2026-W30,2026-07-25,Unassigned,9,2
-2026-W31,2026-08-01,Content Ops,0,1
-2026-W31,2026-08-01,LE - Africa,18,5
-2026-W31,2026-08-01,LE - Canada and USA,16,13
-2026-W31,2026-08-01,LE - Eastern Europe and Central Asia,11,19
-2026-W31,2026-08-01,LE - Mexico and Latin America,12,8
-2026-W31,2026-08-01,LE - North and Central Europe,56,49
-2026-W31,2026-08-01,LE - Northeast Asia,20,5
-2026-W31,2026-08-01,LE - South Asia and Middle East,33,28
-2026-W31,2026-08-01,LE - South West Europe,17,12
-2026-W31,2026-08-01,LE - Southeast Asia and Oceania,27,6
-2026-W31,2026-08-01,Map Experts Gent,5,0
-2026-W31,2026-08-01,Map Experts Internal,35,13
-2026-W31,2026-08-01,Map Experts Lebanon,74,28
-2026-W31,2026-08-01,Map Experts Lodz,5,0
-2026-W31,2026-08-01,Map Experts Pune,24,3
-2026-W31,2026-08-01,Unassigned,46,3
-2026-W32,2026-08-08,LE - Africa,23,5
-2026-W32,2026-08-08,LE - Canada and USA,18,13
-2026-W32,2026-08-08,LE - Eastern Europe and Central Asia,28,18
-2026-W32,2026-08-08,LE - Mexico and Latin America,9,15
-2026-W32,2026-08-08,LE - North and Central Europe,60,50
-2026-W32,2026-08-08,LE - Northeast Asia,29,6
-2026-W32,2026-08-08,LE - South Asia and Middle East,35,21
-2026-W32,2026-08-08,LE - South West Europe,33,11
-2026-W32,2026-08-08,LE - Southeast Asia and Oceania,23,10
-2026-W32,2026-08-08,Map Experts Gent,5,0
-2026-W32,2026-08-08,Map Experts Internal,28,10
-2026-W32,2026-08-08,Map Experts Lebanon,82,26
-2026-W32,2026-08-08,Map Experts Lodz,3,2
-2026-W32,2026-08-08,Map Experts Pune,41,4
-2026-W32,2026-08-08,Unassigned,37,11
-2026-W33,2026-08-15,LE - Africa,28,9
-2026-W33,2026-08-15,LE - Canada and USA,30,15
-2026-W33,2026-08-15,LE - Eastern Europe and Central Asia,10,26
-2026-W33,2026-08-15,LE - Mexico and Latin America,6,16
-2026-W33,2026-08-15,LE - North and Central Europe,54,49
-2026-W33,2026-08-15,LE - Northeast Asia,28,5
-2026-W33,2026-08-15,LE - South Asia and Middle East,32,26
-2026-W33,2026-08-15,LE - South West Europe,39,8
-2026-W33,2026-08-15,LE - Southeast Asia and Oceania,20,10
-2026-W33,2026-08-15,Map Experts Gent,14,66
-2026-W33,2026-08-15,Map Experts Internal,29,11
-2026-W33,2026-08-15,Map Experts Lebanon,87,106
-2026-W33,2026-08-15,Map Experts Lodz,3,1
-2026-W33,2026-08-15,Map Experts Pune,49,4
-2026-W33,2026-08-15,Unassigned,32,16
-2026-W34,2026-08-22,LE - Africa,23,13
-2026-W34,2026-08-22,LE - Canada and USA,31,25
-2026-W34,2026-08-22,LE - Eastern Europe and Central Asia,10,18
-2026-W34,2026-08-22,LE - Mexico and Latin America,7,9
-2026-W34,2026-08-22,LE - North and Central Europe,50,55
-2026-W34,2026-08-22,LE - Northeast Asia,33,2
-2026-W34,2026-08-22,LE - South Asia and Middle East,30,27
-2026-W34,2026-08-22,LE - South West Europe,31,10
-2026-W34,2026-08-22,LE - Southeast Asia and Oceania,20,11
-2026-W34,2026-08-22,Map Experts Gent,15,72
-2026-W34,2026-08-22,Map Experts Internal,30,11
-2026-W34,2026-08-22,Map Experts Lebanon,89,102
-2026-W34,2026-08-22,Map Experts Lodz,2,3
-2026-W34,2026-08-22,Map Experts Pune,54,29
-2026-W34,2026-08-22,Unassigned,32,21
-2026-W35,2026-08-29,LE - Africa,21,10
-2026-W35,2026-08-29,LE - Canada and USA,35,29
-2026-W35,2026-08-29,LE - Eastern Europe and Central Asia,16,18
-2026-W35,2026-08-29,LE - Mexico and Latin America,1,12
-2026-W35,2026-08-29,LE - North and Central Europe,53,59
-2026-W35,2026-08-29,LE - Northeast Asia,25,6
-2026-W35,2026-08-29,LE - South Asia and Middle East,31,32
-2026-W35,2026-08-29,LE - South West Europe,29,7
-2026-W35,2026-08-29,LE - Southeast Asia and Oceania,19,13
-2026-W35,2026-08-29,Map Experts Gent,15,72
-2026-W35,2026-08-29,Map Experts Internal,40,12
-2026-W35,2026-08-29,Map Experts LCC,1,0
-2026-W35,2026-08-29,Map Experts Lebanon,91,102
-2026-W35,2026-08-29,Map Experts Lodz,4,3
-2026-W35,2026-08-29,Map Experts Pune,58,32
-2026-W35,2026-08-29,Unassigned,36,24
-2026-W36,2026-09-05,LE - Africa,16,10
-2026-W36,2026-09-05,LE - Canada and USA,10,56
-2026-W36,2026-09-05,LE - Eastern Europe and Central Asia,18,12
-2026-W36,2026-09-05,LE - Mexico and Latin America,2,7
-2026-W36,2026-09-05,LE - North and Central Europe,54,57
-2026-W36,2026-09-05,LE - Northeast Asia,25,4
-2026-W36,2026-09-05,LE - South Asia and Middle East,29,25
-2026-W36,2026-09-05,LE - South West Europe,43,9
-2026-W36,2026-09-05,LE - Southeast Asia and Oceania,17,9
-2026-W36,2026-09-05,Map Experts Gent,15,72
-2026-W36,2026-09-05,Map Experts Internal,42,15
-2026-W36,2026-09-05,Map Experts LCC,1,0
-2026-W36,2026-09-05,Map Experts Lebanon,88,102
-2026-W36,2026-09-05,Map Experts Lodz,4,4
-2026-W36,2026-09-05,Map Experts Pune,51,30
-2026-W36,2026-09-05,Unassigned,29,29
-2026-W37,2026-09-12,LE - Africa,15,10
-2026-W37,2026-09-12,LE - Canada and USA,19,66
-2026-W37,2026-09-12,LE - Eastern Europe and Central Asia,14,10
-2026-W37,2026-09-12,LE - Mexico and Latin America,3,6
-2026-W37,2026-09-12,LE - North and Central Europe,30,70
-2026-W37,2026-09-12,LE - Northeast Asia,25,2
-2026-W37,2026-09-12,LE - South Asia and Middle East,27,25
-2026-W37,2026-09-12,LE - South West Europe,29,8
-2026-W37,2026-09-12,LE - Southeast Asia and Oceania,19,12
-2026-W37,2026-09-12,Map Experts Gent,16,77
-2026-W37,2026-09-12,Map Experts Internal,37,13
-2026-W37,2026-09-12,Map Experts LCC,1,0
-2026-W37,2026-09-12,Map Experts Lebanon,86,122
-2026-W37,2026-09-12,Map Experts Lodz,10,21
-2026-W37,2026-09-12,Map Experts Pune,47,31
-2026-W37,2026-09-12,Unassigned,26,26
-2026-W38,2026-09-19,LE - Africa,9,6
-2026-W38,2026-09-19,LE - Canada and USA,5,78
-2026-W38,2026-09-19,LE - Eastern Europe and Central Asia,3,1
-2026-W38,2026-09-19,LE - Mexico and Latin America,1,2
-2026-W38,2026-09-19,LE - North and Central Europe,37,70
-2026-W38,2026-09-19,LE - Northeast Asia,24,1
-2026-W38,2026-09-19,LE - South Asia and Middle East,25,17
-2026-W38,2026-09-19,LE - South West Europe,25,6
-2026-W38,2026-09-19,LE - Southeast Asia and Oceania,20,10
-2026-W38,2026-09-19,Map Experts Gent,16,72
-2026-W38,2026-09-19,Map Experts Internal,33,11
-2026-W38,2026-09-19,Map Experts LCC,1,0
-2026-W38,2026-09-19,Map Experts Lebanon,81,125
-2026-W38,2026-09-19,Map Experts Lodz,4,26
-2026-W38,2026-09-19,Map Experts Pune,43,25
-2026-W38,2026-09-19,Unassigned,28,36
+week,date,workgroup,backlog,open,created,started,closed,net_flow
+2026-W28,2026-07-11,LE - Africa,17,8,0,0,0,0
+2026-W28,2026-07-11,LE - Canada and USA,28,14,0,0,0,0
+2026-W28,2026-07-11,LE - Eastern Europe and Central Asia,17,31,0,0,0,0
+2026-W28,2026-07-11,LE - Mexico and Latin America,18,11,0,0,0,0
+2026-W28,2026-07-11,LE - North and Central Europe,40,50,0,0,0,0
+2026-W28,2026-07-11,LE - Northeast Asia,24,8,0,0,0,0
+2026-W28,2026-07-11,LE - South Asia and Middle East,42,21,0,0,0,0
+2026-W28,2026-07-11,LE - South West Europe,27,6,0,0,0,0
+2026-W28,2026-07-11,LE - Southeast Asia and Oceania,21,9,0,0,0,0
+2026-W28,2026-07-11,Map Experts Gent,5,0,0,0,0,0
+2026-W28,2026-07-11,Map Experts Internal,37,11,0,0,0,0
+2026-W28,2026-07-11,Map Experts Lebanon,79,38,0,0,0,0
+2026-W28,2026-07-11,Map Experts Lodz,2,4,0,0,0,0
+2026-W28,2026-07-11,Map Experts Pune,44,2,0,0,0,0
+2026-W28,2026-07-11,Unassigned,14,13,0,0,0,0
+2026-W29,2026-07-18,LE - Africa,18,7,0,0,0,0
+2026-W29,2026-07-18,LE - Canada and USA,13,14,0,0,0,0
+2026-W29,2026-07-18,LE - Eastern Europe and Central Asia,2,34,0,0,0,0
+2026-W29,2026-07-18,LE - Mexico and Latin America,15,10,0,0,0,0
+2026-W29,2026-07-18,LE - North and Central Europe,30,53,0,0,0,0
+2026-W29,2026-07-18,LE - Northeast Asia,25,5,0,0,0,0
+2026-W29,2026-07-18,LE - South Asia and Middle East,34,26,0,0,0,0
+2026-W29,2026-07-18,LE - South West Europe,14,5,0,0,0,0
+2026-W29,2026-07-18,LE - Southeast Asia and Oceania,17,8,0,0,0,0
+2026-W29,2026-07-18,Map Experts Gent,7,1,0,0,0,0
+2026-W29,2026-07-18,Map Experts Internal,41,12,0,0,0,0
+2026-W29,2026-07-18,Map Experts Lebanon,71,33,0,0,0,0
+2026-W29,2026-07-18,Map Experts Lodz,5,1,0,0,0,0
+2026-W29,2026-07-18,Map Experts Pune,42,2,0,0,0,0
+2026-W29,2026-07-18,Unassigned,11,6,0,0,0,0
+2026-W30,2026-07-25,LE - Africa,18,5,0,0,0,0
+2026-W30,2026-07-25,LE - Canada and USA,13,14,0,0,0,0
+2026-W30,2026-07-25,LE - Eastern Europe and Central Asia,10,21,0,0,0,0
+2026-W30,2026-07-25,LE - Mexico and Latin America,10,11,0,0,0,0
+2026-W30,2026-07-25,LE - North and Central Europe,35,57,0,0,0,0
+2026-W30,2026-07-25,LE - Northeast Asia,21,6,0,0,0,0
+2026-W30,2026-07-25,LE - South Asia and Middle East,31,27,0,0,0,0
+2026-W30,2026-07-25,LE - South West Europe,18,10,0,0,0,0
+2026-W30,2026-07-25,LE - Southeast Asia and Oceania,15,6,0,0,0,0
+2026-W30,2026-07-25,Map Experts Gent,5,2,0,0,0,0
+2026-W30,2026-07-25,Map Experts Internal,36,12,0,0,0,0
+2026-W30,2026-07-25,Map Experts Lebanon,75,29,0,0,0,0
+2026-W30,2026-07-25,Map Experts Lodz,4,0,0,0,0,0
+2026-W30,2026-07-25,Map Experts Pune,28,2,0,0,0,0
+2026-W30,2026-07-25,Unassigned,9,2,0,0,0,0
+2026-W31,2026-08-01,Content Ops,0,1,0,0,0,0
+2026-W31,2026-08-01,LE - Africa,18,5,0,0,0,0
+2026-W31,2026-08-01,LE - Canada and USA,16,13,0,0,0,0
+2026-W31,2026-08-01,LE - Eastern Europe and Central Asia,11,19,0,0,0,0
+2026-W31,2026-08-01,LE - Mexico and Latin America,12,8,0,0,0,0
+2026-W31,2026-08-01,LE - North and Central Europe,56,49,0,0,0,0
+2026-W31,2026-08-01,LE - Northeast Asia,20,5,0,0,0,0
+2026-W31,2026-08-01,LE - South Asia and Middle East,33,28,0,0,0,0
+2026-W31,2026-08-01,LE - South West Europe,17,12,0,0,0,0
+2026-W31,2026-08-01,LE - Southeast Asia and Oceania,27,6,0,0,0,0
+2026-W31,2026-08-01,Map Experts Gent,5,0,0,0,0,0
+2026-W31,2026-08-01,Map Experts Internal,35,13,0,0,0,0
+2026-W31,2026-08-01,Map Experts Lebanon,74,28,0,0,0,0
+2026-W31,2026-08-01,Map Experts Lodz,5,0,0,0,0,0
+2026-W31,2026-08-01,Map Experts Pune,24,3,0,0,0,0
+2026-W31,2026-08-01,Unassigned,46,3,0,0,0,0
+2026-W32,2026-08-08,LE - Africa,23,5,0,0,0,0
+2026-W32,2026-08-08,LE - Canada and USA,18,13,0,0,0,0
+2026-W32,2026-08-08,LE - Eastern Europe and Central Asia,28,18,0,0,0,0
+2026-W32,2026-08-08,LE - Mexico and Latin America,9,15,0,0,0,0
+2026-W32,2026-08-08,LE - North and Central Europe,60,50,0,0,0,0
+2026-W32,2026-08-08,LE - Northeast Asia,29,6,0,0,0,0
+2026-W32,2026-08-08,LE - South Asia and Middle East,35,21,0,0,0,0
+2026-W32,2026-08-08,LE - South West Europe,33,11,0,0,0,0
+2026-W32,2026-08-08,LE - Southeast Asia and Oceania,23,10,0,0,0,0
+2026-W32,2026-08-08,Map Experts Gent,5,0,0,0,0,0
+2026-W32,2026-08-08,Map Experts Internal,28,10,0,0,0,0
+2026-W32,2026-08-08,Map Experts Lebanon,82,26,0,0,0,0
+2026-W32,2026-08-08,Map Experts Lodz,3,2,0,0,0,0
+2026-W32,2026-08-08,Map Experts Pune,41,4,0,0,0,0
+2026-W32,2026-08-08,Unassigned,37,11,0,0,0,0
+2026-W33,2026-08-15,LE - Africa,28,9,0,0,0,0
+2026-W33,2026-08-15,LE - Canada and USA,30,15,0,0,0,0
+2026-W33,2026-08-15,LE - Eastern Europe and Central Asia,10,26,0,0,0,0
+2026-W33,2026-08-15,LE - Mexico and Latin America,6,16,0,0,0,0
+2026-W33,2026-08-15,LE - North and Central Europe,54,49,0,0,0,0
+2026-W33,2026-08-15,LE - Northeast Asia,28,5,0,0,0,0
+2026-W33,2026-08-15,LE - South Asia and Middle East,32,26,0,0,0,0
+2026-W33,2026-08-15,LE - South West Europe,39,8,0,0,0,0
+2026-W33,2026-08-15,LE - Southeast Asia and Oceania,20,10,0,0,0,0
+2026-W33,2026-08-15,Map Experts Gent,14,66,0,0,0,0
+2026-W33,2026-08-15,Map Experts Internal,29,11,0,0,0,0
+2026-W33,2026-08-15,Map Experts Lebanon,87,106,0,0,0,0
+2026-W33,2026-08-15,Map Experts Lodz,3,1,0,0,0,0
+2026-W33,2026-08-15,Map Experts Pune,49,4,0,0,0,0
+2026-W33,2026-08-15,Unassigned,32,16,0,0,0,0
+2026-W34,2026-08-22,LE - Africa,23,13,0,0,0,0
+2026-W34,2026-08-22,LE - Canada and USA,31,25,0,0,0,0
+2026-W34,2026-08-22,LE - Eastern Europe and Central Asia,10,18,0,0,0,0
+2026-W34,2026-08-22,LE - Mexico and Latin America,7,9,0,0,0,0
+2026-W34,2026-08-22,LE - North and Central Europe,50,55,0,0,0,0
+2026-W34,2026-08-22,LE - Northeast Asia,33,2,0,0,0,0
+2026-W34,2026-08-22,LE - South Asia and Middle East,30,27,0,0,0,0
+2026-W34,2026-08-22,LE - South West Europe,31,10,0,0,0,0
+2026-W34,2026-08-22,LE - Southeast Asia and Oceania,20,11,0,0,0,0
+2026-W34,2026-08-22,Map Experts Gent,15,72,0,0,0,0
+2026-W34,2026-08-22,Map Experts Internal,30,11,0,0,0,0
+2026-W34,2026-08-22,Map Experts Lebanon,89,102,0,0,0,0
+2026-W34,2026-08-22,Map Experts Lodz,2,3,0,0,0,0
+2026-W34,2026-08-22,Map Experts Pune,54,29,0,0,0,0
+2026-W34,2026-08-22,Unassigned,32,21,0,0,0,0
+2026-W35,2026-08-29,LE - Africa,21,10,0,0,0,0
+2026-W35,2026-08-29,LE - Canada and USA,35,29,0,0,0,0
+2026-W35,2026-08-29,LE - Eastern Europe and Central Asia,16,18,0,0,0,0
+2026-W35,2026-08-29,LE - Mexico and Latin America,1,12,0,0,0,0
+2026-W35,2026-08-29,LE - North and Central Europe,53,59,0,0,0,0
+2026-W35,2026-08-29,LE - Northeast Asia,25,6,0,0,0,0
+2026-W35,2026-08-29,LE - South Asia and Middle East,31,32,0,0,0,0
+2026-W35,2026-08-29,LE - South West Europe,29,7,0,0,0,0
+2026-W35,2026-08-29,LE - Southeast Asia and Oceania,19,13,0,0,0,0
+2026-W35,2026-08-29,Map Experts Gent,15,72,0,0,0,0
+2026-W35,2026-08-29,Map Experts Internal,40,12,0,0,0,0
+2026-W35,2026-08-29,Map Experts LCC,1,0,0,0,0,0
+2026-W35,2026-08-29,Map Experts Lebanon,91,102,0,0,0,0
+2026-W35,2026-08-29,Map Experts Lodz,4,3,0,0,0,0
+2026-W35,2026-08-29,Map Experts Pune,58,32,0,0,0,0
+2026-W35,2026-08-29,Unassigned,36,24,0,0,0,0
+2026-W36,2026-09-05,LE - Africa,16,10,0,0,0,0
+2026-W36,2026-09-05,LE - Canada and USA,10,56,0,0,0,0
+2026-W36,2026-09-05,LE - Eastern Europe and Central Asia,18,12,0,0,0,0
+2026-W36,2026-09-05,LE - Mexico and Latin America,2,7,0,0,0,0
+2026-W36,2026-09-05,LE - North and Central Europe,54,57,0,0,0,0
+2026-W36,2026-09-05,LE - Northeast Asia,25,4,0,0,0,0
+2026-W36,2026-09-05,LE - South Asia and Middle East,29,25,0,0,0,0
+2026-W36,2026-09-05,LE - South West Europe,43,9,0,0,0,0
+2026-W36,2026-09-05,LE - Southeast Asia and Oceania,17,9,0,0,0,0
+2026-W36,2026-09-05,Map Experts Gent,15,72,0,0,0,0
+2026-W36,2026-09-05,Map Experts Internal,42,15,0,0,0,0
+2026-W36,2026-09-05,Map Experts LCC,1,0,0,0,0,0
+2026-W36,2026-09-05,Map Experts Lebanon,88,102,0,0,0,0
+2026-W36,2026-09-05,Map Experts Lodz,4,4,0,0,0,0
+2026-W36,2026-09-05,Map Experts Pune,51,30,0,0,0,0
+2026-W36,2026-09-05,Unassigned,29,29,0,0,0,0
+2026-W37,2026-09-12,LE - Africa,15,10,0,0,0,0
+2026-W37,2026-09-12,LE - Canada and USA,19,66,0,0,0,0
+2026-W37,2026-09-12,LE - Eastern Europe and Central Asia,14,10,0,0,0,0
+2026-W37,2026-09-12,LE - Mexico and Latin America,3,6,0,0,0,0
+2026-W37,2026-09-12,LE - North and Central Europe,30,70,0,0,0,0
+2026-W37,2026-09-12,LE - Northeast Asia,25,2,0,0,0,0
+2026-W37,2026-09-12,LE - South Asia and Middle East,27,25,0,0,0,0
+2026-W37,2026-09-12,LE - South West Europe,29,8,0,0,0,0
+2026-W37,2026-09-12,LE - Southeast Asia and Oceania,19,12,0,0,0,0
+2026-W37,2026-09-12,Map Experts Gent,16,77,0,0,0,0
+2026-W37,2026-09-12,Map Experts Internal,37,13,0,0,0,0
+2026-W37,2026-09-12,Map Experts LCC,1,0,0,0,0,0
+2026-W37,2026-09-12,Map Experts Lebanon,86,122,0,0,0,0
+2026-W37,2026-09-12,Map Experts Lodz,10,21,0,0,0,0
+2026-W37,2026-09-12,Map Experts Pune,47,31,0,0,0,0
+2026-W37,2026-09-12,Unassigned,26,26,0,0,0,0
+2026-W38,2026-09-19,LE - Africa,9,6,0,0,0,0
+2026-W38,2026-09-19,LE - Canada and USA,5,78,0,0,0,0
+2026-W38,2026-09-19,LE - Eastern Europe and Central Asia,3,1,0,0,0,0
+2026-W38,2026-09-19,LE - Mexico and Latin America,1,2,0,0,0,0
+2026-W38,2026-09-19,LE - North and Central Europe,37,70,0,0,0,0
+2026-W38,2026-09-19,LE - Northeast Asia,24,1,0,0,0,0
+2026-W38,2026-09-19,LE - South Asia and Middle East,25,17,0,0,0,0
+2026-W38,2026-09-19,LE - South West Europe,25,6,0,0,0,0
+2026-W38,2026-09-19,LE - Southeast Asia and Oceania,20,10,0,0,0,0
+2026-W38,2026-09-19,Map Experts Gent,16,72,0,0,0,0
+2026-W38,2026-09-19,Map Experts Internal,33,11,0,0,0,0
+2026-W38,2026-09-19,Map Experts LCC,1,0,0,0,0,0
+2026-W38,2026-09-19,Map Experts Lebanon,81,125,0,0,0,0
+2026-W38,2026-09-19,Map Experts Lodz,4,26,0,0,0,0
+2026-W38,2026-09-19,Map Experts Pune,43,25,0,0,0,0
+2026-W38,2026-09-19,Unassigned,28,36,0,0,0,0
+2026-W39,2026-09-24,LE - Africa,8,5,2,2,5,-3
+2026-W39,2026-09-24,LE - Canada and USA,5,69,11,11,10,1
+2026-W39,2026-09-24,LE - Eastern Europe and Central Asia,3,0,7,7,10,-3
+2026-W39,2026-09-24,LE - Mexico and Latin America,1,1,5,5,7,-2
+2026-W39,2026-09-24,LE - North and Central Europe,38,76,19,20,18,1
+2026-W39,2026-09-24,LE - Northeast Asia,30,2,12,5,9,3
+2026-W39,2026-09-24,LE - South Asia and Middle East,23,18,5,7,14,-9
+2026-W39,2026-09-24,LE - South West Europe,24,8,11,8,10,1
+2026-W39,2026-09-24,LE - Southeast Asia and Oceania,22,10,12,9,8,4
+2026-W39,2026-09-24,Map Experts Gent,24,48,8,0,24,-16
+2026-W39,2026-09-24,Map Experts Internal,31,10,4,4,9,-5
+2026-W39,2026-09-24,Map Experts LCC,1,0,0,0,0,0
+2026-W39,2026-09-24,Map Experts Lebanon,111,129,40,10,8,32
+2026-W39,2026-09-24,Map Experts Lodz,11,25,14,7,6,8
+2026-W39,2026-09-24,Map Experts Pune,43,24,7,6,11,-4
+2026-W39,2026-09-24,Unassigned,29,33,5,2,7,-2
