@@ -38,15 +38,21 @@ WORKGROUP_PAGE_IDS = {
 
 
 def load_data():
-    data = defaultdict(dict)  # data[workgroup][week] = {backlog, open}
+    data = defaultdict(dict)  # data[workgroup][week] = {backlog, open, created, started, closed, net_flow}
     with open(CSV_PATH, newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             wg = row["workgroup"]
             week = row["week"]
+            created = int(row.get("created", 0) or 0)
+            closed = int(row.get("closed", 0) or 0)
             data[wg][week] = {
                 "backlog": int(row["backlog"]) if row.get("backlog", "").strip() else 0,
                 "open": int(row["open"]) if row.get("open", "").strip() else 0,
+                "created": created,
+                "started": int(row.get("started", 0) or 0),
+                "closed": closed,
+                "net_flow": int(row.get("net_flow", created - closed) or 0),
             }
     return data
 
@@ -122,6 +128,69 @@ def build_table_html(weeks_data):
 """
 
 
+def generate_flow_pilot_chart(workgroup, weeks_data):
+    weeks = sorted(weeks_data.keys())[-3:]
+    created_vals = [weeks_data[w].get("created", 0) for w in weeks]
+    closed_vals = [weeks_data[w].get("closed", 0) for w in weeks]
+    net_vals = [c - cl for c, cl in zip(created_vals, closed_vals)]
+
+    x = np.arange(len(weeks))
+    width = 0.35
+
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.bar(x - width / 2, created_vals, width=width, label="Created (Arrivals)", color="#6C8EF5")
+    ax.bar(x + width / 2, closed_vals, width=width, label="Closed (Throughput)", color="#2EBD85")
+    ax.plot(x, net_vals, marker="o", linewidth=2, color="#B23A48", label="Net Flow (Created - Closed)")
+    ax.axhline(0, color="#666666", linewidth=1, linestyle="--")
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(weeks, rotation=0)
+    ax.set_ylabel("Issue Count")
+    ax.set_title(f"LE - Africa 3-Week Flow / Velocity Pilot — {workgroup}")
+    ax.legend(loc="upper left")
+    y_top = max(created_vals + closed_vals + [abs(v) for v in net_vals] + [1])
+    ax.set_ylim(min(0, min(net_vals + [0])) - 1, y_top * 1.2)
+    plt.tight_layout()
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=150)
+    plt.close(fig)
+    buf.seek(0)
+    return buf.read()
+
+
+def build_flow_pilot_table_html(weeks_data):
+    weeks = sorted(weeks_data.keys())[-3:]
+    rows = ""
+    for w in weeks:
+        created = weeks_data[w].get("created", 0)
+        started = weeks_data[w].get("started", 0)
+        closed = weeks_data[w].get("closed", 0)
+        net = weeks_data[w].get("net_flow", created - closed)
+        efficiency = f"{(closed / created):.2f}" if created else "n/a"
+        rows += (
+            f"<tr><td>{w}</td><td>{created}</td><td>{started}</td><td>{closed}</td>"
+            f"<td>{net}</td><td>{efficiency}</td></tr>"
+        )
+    return f"""
+<table>
+  <thead>
+    <tr>
+      <th>Week</th>
+      <th>Created</th>
+      <th>Started</th>
+      <th>Closed</th>
+      <th>Net Flow</th>
+      <th>Efficiency (Closed / Created)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rows}
+  </tbody>
+</table>
+"""
+
+
 def upload_attachment(page_id, filename, image_bytes):
     """Upload (or update) a PNG attachment on the given Confluence page."""
     url = f"{CONFLUENCE_BASE_URL}/rest/api/content/{page_id}/child/attachment"
@@ -152,6 +221,7 @@ def upload_attachment(page_id, filename, image_bytes):
 
 def update_page(page_id, workgroup, weeks_data):
     chart_filename = f"chart_{workgroup.replace(' ', '_').replace('-', '_')}.png"
+    pilot_chart_filename = f"chart_{workgroup.replace(' ', '_').replace('-', '_')}_flow_pilot.png"
 
     # 1. Generate and upload chart image
     chart_bytes = generate_chart(workgroup, weeks_data)
@@ -167,11 +237,23 @@ def update_page(page_id, workgroup, weeks_data):
 
     # 3. Build page body with embedded chart image + table
     table_html = build_table_html(weeks_data)
+    pilot_body = ""
+    if workgroup == "LE - Africa":
+        pilot_chart_bytes = generate_flow_pilot_chart(workgroup, weeks_data)
+        upload_attachment(page_id, pilot_chart_filename, pilot_chart_bytes)
+        flow_table_html = build_flow_pilot_table_html(weeks_data)
+        pilot_body = f"""
+<h2>3-Week Flow / Velocity Pilot (LE - Africa only)</h2>
+<ac:image ac:width="1000"><ri:attachment ri:filename="{pilot_chart_filename}" /></ac:image>
+<h3>Pilot Summary</h3>
+{flow_table_html}
+"""
     new_body = f"""
 <h2>Weekly Backlog &amp; Open Trend</h2>
 <ac:image ac:width="1100"><ri:attachment ri:filename="{chart_filename}" /></ac:image>
 <h2>Raw Data</h2>
 {table_html}
+{pilot_body}
 """
 
     payload = {
