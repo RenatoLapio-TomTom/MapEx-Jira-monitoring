@@ -18,7 +18,12 @@ with trend charts published to Confluence.
 5. One Confluence page per workgroup is created/updated in the `~lapio` space
    with a **16-week stacked backlog/open chart**.
 6. **Pilot only:** `LE - Africa` also gets a 3-week flow/velocity chart
-   (Created vs Closed bars + Net Flow line) and a compact pilot summary table.
+   (Created vs Closed bars + Net Flow line) and a compact pilot summary table:
+   - `Created`: new MAPEX issues created in the week (arrivals)
+   - `Started`: issues moved from Backlog to Open in the week
+   - `Closed`: issues moved to Closed in the week (throughput)
+   - `Net Flow`: `Created - Closed`
+   - `Efficiency`: `Closed / Created` (`n/a` when Created is `0`)
 
 ## Setup
 
