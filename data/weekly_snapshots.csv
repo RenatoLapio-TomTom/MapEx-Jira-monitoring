@@ -137,38 +137,6 @@ week,date,workgroup,backlog,open,created,started,closed,net_flow
 2026-W36,2026-09-05,Map Experts Lodz,4,4,0,0,0,0
 2026-W36,2026-09-05,Map Experts Pune,51,30,0,0,0,0
 2026-W36,2026-09-05,Unassigned,29,29,0,0,0,0
-2026-W37,2026-09-12,LE - Africa,15,10,0,0,0,0
-2026-W37,2026-09-12,LE - Canada and USA,19,66,0,0,0,0
-2026-W37,2026-09-12,LE - Eastern Europe and Central Asia,14,10,0,0,0,0
-2026-W37,2026-09-12,LE - Mexico and Latin America,3,6,0,0,0,0
-2026-W37,2026-09-12,LE - North and Central Europe,30,70,0,0,0,0
-2026-W37,2026-09-12,LE - Northeast Asia,25,2,0,0,0,0
-2026-W37,2026-09-12,LE - South Asia and Middle East,27,25,0,0,0,0
-2026-W37,2026-09-12,LE - South West Europe,29,8,0,0,0,0
-2026-W37,2026-09-12,LE - Southeast Asia and Oceania,19,12,0,0,0,0
-2026-W37,2026-09-12,Map Experts Gent,16,77,0,0,0,0
-2026-W37,2026-09-12,Map Experts Internal,37,13,0,0,0,0
-2026-W37,2026-09-12,Map Experts LCC,1,0,0,0,0,0
-2026-W37,2026-09-12,Map Experts Lebanon,86,122,0,0,0,0
-2026-W37,2026-09-12,Map Experts Lodz,10,21,0,0,0,0
-2026-W37,2026-09-12,Map Experts Pune,47,31,0,0,0,0
-2026-W37,2026-09-12,Unassigned,26,26,0,0,0,0
-2026-W38,2026-09-19,LE - Africa,9,6,0,0,0,0
-2026-W38,2026-09-19,LE - Canada and USA,5,78,0,0,0,0
-2026-W38,2026-09-19,LE - Eastern Europe and Central Asia,3,1,0,0,0,0
-2026-W38,2026-09-19,LE - Mexico and Latin America,1,2,0,0,0,0
-2026-W38,2026-09-19,LE - North and Central Europe,37,70,0,0,0,0
-2026-W38,2026-09-19,LE - Northeast Asia,24,1,0,0,0,0
-2026-W38,2026-09-19,LE - South Asia and Middle East,25,17,0,0,0,0
-2026-W38,2026-09-19,LE - South West Europe,25,6,0,0,0,0
-2026-W38,2026-09-19,LE - Southeast Asia and Oceania,20,10,0,0,0,0
-2026-W38,2026-09-19,Map Experts Gent,16,72,0,0,0,0
-2026-W38,2026-09-19,Map Experts Internal,33,11,0,0,0,0
-2026-W38,2026-09-19,Map Experts LCC,1,0,0,0,0,0
-2026-W38,2026-09-19,Map Experts Lebanon,81,125,0,0,0,0
-2026-W38,2026-09-19,Map Experts Lodz,4,26,0,0,0,0
-2026-W38,2026-09-19,Map Experts Pune,43,25,0,0,0,0
-2026-W38,2026-09-19,Unassigned,28,36,0,0,0,0
 2026-W39,2026-09-24,LE - Africa,8,5,2,2,5,-3
 2026-W39,2026-09-24,LE - Canada and USA,5,69,11,11,10,1
 2026-W39,2026-09-24,LE - Eastern Europe and Central Asia,3,0,7,7,10,-3
@@ -185,3 +153,35 @@ week,date,workgroup,backlog,open,created,started,closed,net_flow
 2026-W39,2026-09-24,Map Experts Lodz,11,25,14,7,6,8
 2026-W39,2026-09-24,Map Experts Pune,43,24,7,6,11,-4
 2026-W39,2026-09-24,Unassigned,29,33,5,2,7,-2
+2026-W37,2026-09-13,LE - Africa,15,10,6,10,13,-7
+2026-W37,2026-09-13,LE - Canada and USA,19,66,34,33,15,19
+2026-W37,2026-09-13,LE - Eastern Europe and Central Asia,14,10,16,27,28,-12
+2026-W37,2026-09-13,LE - Mexico and Latin America,3,6,4,5,3,1
+2026-W37,2026-09-13,LE - North and Central Europe,31,72,48,54,57,-9
+2026-W37,2026-09-13,LE - Northeast Asia,28,2,23,21,25,-2
+2026-W37,2026-09-13,LE - South Asia and Middle East,27,25,1,4,5,-4
+2026-W37,2026-09-13,LE - South West Europe,29,7,23,33,20,3
+2026-W37,2026-09-13,LE - Southeast Asia and Oceania,20,12,10,10,11,-1
+2026-W37,2026-09-13,Map Experts Gent,16,77,6,5,5,1
+2026-W37,2026-09-13,Map Experts Internal,37,13,4,6,9,-5
+2026-W37,2026-09-13,Map Experts LCC,1,0,0,0,0,0
+2026-W37,2026-09-13,Map Experts Lebanon,86,122,33,39,18,15
+2026-W37,2026-09-13,Map Experts Lodz,10,21,29,26,12,17
+2026-W37,2026-09-13,Map Experts Pune,47,31,8,9,13,-5
+2026-W37,2026-09-13,Unassigned,25,26,5,6,10,-5
+2026-W38,2026-09-20,LE - Africa,9,6,7,15,24,-17
+2026-W38,2026-09-20,LE - Canada and USA,5,78,19,37,14,5
+2026-W38,2026-09-20,LE - Eastern Europe and Central Asia,3,1,9,20,26,-17
+2026-W38,2026-09-20,LE - Mexico and Latin America,1,2,2,4,4,-2
+2026-W38,2026-09-20,LE - North and Central Europe,40,70,43,37,44,-1
+2026-W38,2026-09-20,LE - Northeast Asia,24,2,9,14,22,-13
+2026-W38,2026-09-20,LE - South Asia and Middle East,25,17,4,10,17,-13
+2026-W38,2026-09-20,LE - South West Europe,25,6,17,24,23,-6
+2026-W38,2026-09-20,LE - Southeast Asia and Oceania,20,11,17,19,24,-7
+2026-W38,2026-09-20,Map Experts Gent,16,72,0,0,5,-5
+2026-W38,2026-09-20,Map Experts Internal,33,11,10,4,25,-15
+2026-W38,2026-09-20,Map Experts LCC,1,0,0,0,0,0
+2026-W38,2026-09-20,Map Experts Lebanon,81,125,25,27,30,-5
+2026-W38,2026-09-20,Map Experts Lodz,4,26,12,17,13,-1
+2026-W38,2026-09-20,Map Experts Pune,43,25,12,15,22,-10
+2026-W38,2026-09-20,Unassigned,27,35,17,12,9,8
