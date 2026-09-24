@@ -39,20 +39,27 @@ WORKGROUP_PAGE_IDS = {
 
 def load_data():
     data = defaultdict(dict)  # data[workgroup][week] = {backlog, open, created, started, closed, net_flow}
+
+    def to_int(value, default=0):
+        raw = str(value).strip() if value is not None else ""
+        if raw == "":
+            return default
+        return int(raw)
+
     with open(CSV_PATH, newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
             wg = row["workgroup"]
             week = row["week"]
-            created = int(row.get("created", 0) or 0)
-            closed = int(row.get("closed", 0) or 0)
+            created = to_int(row.get("created", 0), 0)
+            closed = to_int(row.get("closed", 0), 0)
             data[wg][week] = {
-                "backlog": int(row["backlog"]) if row.get("backlog", "").strip() else 0,
-                "open": int(row["open"]) if row.get("open", "").strip() else 0,
+                "backlog": to_int(row.get("backlog", 0), 0),
+                "open": to_int(row.get("open", 0), 0),
                 "created": created,
-                "started": int(row.get("started", 0) or 0),
+                "started": to_int(row.get("started", 0), 0),
                 "closed": closed,
-                "net_flow": int(row.get("net_flow", created - closed) or 0),
+                "net_flow": to_int(row.get("net_flow"), created - closed),
             }
     return data
 
@@ -146,7 +153,7 @@ def generate_flow_pilot_chart(workgroup, weeks_data):
     ax.set_xticks(x)
     ax.set_xticklabels(weeks, rotation=0)
     ax.set_ylabel("Issue Count")
-    ax.set_title(f"LE - Africa 3-Week Flow / Velocity Pilot — {workgroup}")
+    ax.set_title("3-Week Flow / Velocity Pilot (Created vs Closed with Net Flow) — LE - Africa")
     ax.legend(loc="upper left")
     y_top = max(created_vals + closed_vals + [abs(v) for v in net_vals] + [1])
     ax.set_ylim(min(0, min(net_vals + [0])) - 1, y_top * 1.2)
@@ -251,9 +258,9 @@ def update_page(page_id, workgroup, weeks_data):
     new_body = f"""
 <h2>Weekly Backlog &amp; Open Trend</h2>
 <ac:image ac:width="1100"><ri:attachment ri:filename="{chart_filename}" /></ac:image>
+{pilot_body}
 <h2>Raw Data</h2>
 {table_html}
-{pilot_body}
 """
 
     payload = {
