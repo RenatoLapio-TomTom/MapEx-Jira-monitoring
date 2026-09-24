@@ -46,6 +46,19 @@ Once secrets are configured:
 2. Click **Run workflow** → **Run workflow**
 3. Check your Confluence space: `https://tomtom.atlassian.net/wiki/spaces/~lapio`
 
+### 3. Backfill historical flow metrics
+
+To refresh historical weeks after flow tracking changes:
+1. Go to **Actions → Jira Weekly Monitoring**.
+2. Click **Run workflow**.
+3. Set `backfill_weeks` (workflow_dispatch input), for example:
+   - `2026-W37,2026-W38`
+4. Run the workflow.
+
+Backfill runs upsert rows by `(week, workgroup)` in `data/weekly_snapshots.csv`, so targeted historical weeks are refreshed while other rows are preserved.
+
+Historical Jira flow counts depend on available changelog history and use the current workgroup-field attribution on the returned issues.
+
 ## File structure
 
 ```

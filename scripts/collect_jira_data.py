@@ -107,8 +107,18 @@ def normalize_snapshot_row(row):
     return normalized
 
 
+def upsert_snapshot_rows(existing_rows, refreshed_rows):
+    refreshed_keys = {(row["week"], row["workgroup"]) for row in refreshed_rows}
+    preserved_rows = [
+        row for row in existing_rows
+        if (row["week"], row["workgroup"]) not in refreshed_keys
+    ]
+    return preserved_rows + refreshed_rows
+
+
 def main(backfill_weeks=None):
-    if backfill_weeks:
+    is_backfill = bool(backfill_weeks)
+    if is_backfill:
         weeks_to_run = [w.strip() for w in backfill_weeks.split(",")]
         print(f"\n=== Backfill mode: {weeks_to_run} ===")
     else:
@@ -134,14 +144,14 @@ def main(backfill_weeks=None):
         week_start, week_end = iso_week_range(iso_week)
         week_start_str = week_start.strftime("%Y-%m-%d")
         week_end_str = week_end.strftime("%Y-%m-%d")
-        date_str = BACKFILL_DATES.get(iso_week) if backfill_weeks else datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        date_str = BACKFILL_DATES.get(iso_week) if is_backfill else datetime.now(timezone.utc).strftime("%Y-%m-%d")
         if date_str is None:
             date_str = (week_end - timedelta(days=1)).strftime("%Y-%m-%d")
 
         print(f"\n=== Week: {iso_week} | Snapshot date: {date_str} ===")
         print(f"Week window (UTC): {week_start_str} -> {week_end_str}")
 
-        if backfill_weeks:
+        if is_backfill:
             jql_backlog = f'project = MAPEX AND status WAS "Backlog" ON "{date_str}" AND createdDate > "2026-01-01"'
             jql_open    = f'project = MAPEX AND status WAS "Open" ON "{date_str}" AND createdDate > "2026-01-01"'
         else:
@@ -200,21 +210,32 @@ def main(backfill_weeks=None):
                 f"closed={closed_counts[wg]}, net_flow={created_counts[wg] - closed_counts[wg]}"
             )
 
-        existing_keys = {(r["week"], r["workgroup"]) for r in existing_rows + all_new_rows}
-        new_rows = [
+        week_rows = [
             {"week": iso_week, "date": date_str, "workgroup": wg,
              "backlog": backlog_counts[wg], "open": open_counts[wg],
              "created": created_counts[wg], "started": started_counts[wg],
              "closed": closed_counts[wg], "net_flow": created_counts[wg] - closed_counts[wg]}
             for wg in all_workgroups
-            if (iso_week, wg) not in existing_keys
         ]
 
-        if not new_rows:
-            print(f"\nData for {iso_week} already recorded. Skipping.")
+        if is_backfill:
+            if not week_rows:
+                print(f"\nNo rows found for backfill week {iso_week}.")
+            else:
+                existing_rows = upsert_snapshot_rows(existing_rows, week_rows)
+                all_new_rows = upsert_snapshot_rows(all_new_rows, week_rows)
+                print(f"\nQueued {len(week_rows)} refreshed rows for {iso_week}")
         else:
-            all_new_rows.extend(new_rows)
-            print(f"\nQueued {len(new_rows)} rows for {iso_week}")
+            existing_keys = {(r["week"], r["workgroup"]) for r in existing_rows + all_new_rows}
+            new_rows = [
+                row for row in week_rows
+                if (row["week"], row["workgroup"]) not in existing_keys
+            ]
+            if not new_rows:
+                print(f"\nData for {iso_week} already recorded. Skipping.")
+            else:
+                all_new_rows.extend(new_rows)
+                print(f"\nQueued {len(new_rows)} rows for {iso_week}")
 
         with open("data/latest_snapshot.json", "w") as f:
             json.dump({
@@ -233,6 +254,7 @@ def main(backfill_weeks=None):
         print("Written data/latest_snapshot.json")
 
     if all_new_rows:
+        final_rows = upsert_snapshot_rows(existing_rows, all_new_rows)
         with open(DATA_FILE, "w", newline="") as f:
             writer = csv.DictWriter(
                 f,
@@ -242,8 +264,8 @@ def main(backfill_weeks=None):
                 ],
             )
             writer.writeheader()
-            writer.writerows(existing_rows + all_new_rows)
-        print(f"\nAppended {len(all_new_rows)} rows to {DATA_FILE}")
+            writer.writerows(final_rows)
+        print(f"\nUpserted {len(all_new_rows)} rows into {DATA_FILE}")
 
 
 if __name__ == "__main__":
