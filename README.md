@@ -1,19 +1,24 @@
 # MapEx Jira Monitoring
 
-Automated weekly snapshot of MAPEX Jira backlog, open, and closed items per workgroup,
+Automated weekly snapshot of MAPEX Jira backlog/open plus flow metrics per workgroup,
 with trend charts published to Confluence.
 
 ## How it works
 
 1. **Every Saturday at 20:00 CET** a GitHub Actions workflow runs.
-2. It queries three JQL filters against `tomtom.atlassian.net`:
+2. It queries Jira for weekly snapshot counts and weekly flow transitions:
    - Backlog: `project = MAPEX AND status = Backlog AND createdDate > "2026-01-01"`
    - Open: `project = MAPEX AND status = Open AND createdDate > "2026-01-01"`
-   - Closed: `project = MAPEX AND status = Closed AND createdDate > "2026-01-01"`
+   - Created (arrivals): issues created in the ISO week window
+   - Started: issues with `status CHANGED FROM "Backlog" TO "Open" DURING (...)`
+   - Closed (throughput): issues with `status CHANGED TO "Closed" DURING (...)`
 3. Counts are grouped by **workgroup** (`customfield_10521`).
-4. A new row is appended to `data/weekly_snapshots.csv`.
+4. A new row is appended to `data/weekly_snapshots.csv` with:
+   - `backlog`, `open`, `created`, `started`, `closed`, `net_flow` (`created - closed`)
 5. One Confluence page per workgroup is created/updated in the `~lapio` space
-   with a **stacked bar chart** showing the weekly trend.
+   with a **16-week stacked backlog/open chart**.
+6. **Pilot only:** `LE - Africa` also gets a 3-week flow/velocity chart
+   (Created vs Closed bars + Net Flow line) and a compact pilot summary table.
 
 ## Setup
 
