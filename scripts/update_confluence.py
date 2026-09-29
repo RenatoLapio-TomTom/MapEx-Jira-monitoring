@@ -1,5 +1,6 @@
 import os
 import csv
+import html
 import io
 import requests
 import matplotlib
@@ -153,7 +154,7 @@ def generate_flow_pilot_chart(workgroup, weeks_data):
     ax.set_xticks(x)
     ax.set_xticklabels(weeks, rotation=0)
     ax.set_ylabel("Issue Count")
-    ax.set_title("3-Week Flow / Velocity Pilot (Created vs Closed with Net Flow) — LE - Africa")
+    ax.set_title(f"3-Week Flow / Velocity Pilot (Created vs Closed with Net Flow) — {workgroup}")
     ax.legend(loc="upper left")
     y_top = max(created_vals + closed_vals + [abs(v) for v in net_vals] + [1])
     ax.set_ylim(min(0, min(net_vals + [0])) - 1, y_top * 1.2)
@@ -198,6 +199,22 @@ def build_flow_pilot_table_html(weeks_data):
 """
 
 
+def chart_filenames(workgroup):
+    """Return stable (backlog/open chart, flow pilot chart) attachment filenames for a workgroup."""
+    base = f"chart_{workgroup.replace(' ', '_').replace('-', '_')}"
+    return f"{base}.png", f"{base}_flow_pilot.png"
+
+
+def build_flow_pilot_section_html(workgroup, pilot_chart_filename, weeks_data):
+    flow_table_html = build_flow_pilot_table_html(weeks_data)
+    return f"""
+<h2>3-Week Flow / Velocity Pilot ({html.escape(workgroup)})</h2>
+<ac:image ac:width="1000"><ri:attachment ri:filename="{html.escape(pilot_chart_filename)}" /></ac:image>
+<h3>Pilot Summary</h3>
+{flow_table_html}
+"""
+
+
 def upload_attachment(page_id, filename, image_bytes):
     """Upload (or update) a PNG attachment on the given Confluence page."""
     url = f"{CONFLUENCE_BASE_URL}/rest/api/content/{page_id}/child/attachment"
@@ -227,8 +244,7 @@ def upload_attachment(page_id, filename, image_bytes):
 
 
 def update_page(page_id, workgroup, weeks_data):
-    chart_filename = f"chart_{workgroup.replace(' ', '_').replace('-', '_')}.png"
-    pilot_chart_filename = f"chart_{workgroup.replace(' ', '_').replace('-', '_')}_flow_pilot.png"
+    chart_filename, pilot_chart_filename = chart_filenames(workgroup)
 
     # 1. Generate and upload chart image
     chart_bytes = generate_chart(workgroup, weeks_data)
@@ -244,17 +260,9 @@ def update_page(page_id, workgroup, weeks_data):
 
     # 3. Build page body with embedded chart image + table
     table_html = build_table_html(weeks_data)
-    pilot_body = ""
-    if workgroup == "LE - Africa":
-        pilot_chart_bytes = generate_flow_pilot_chart(workgroup, weeks_data)
-        upload_attachment(page_id, pilot_chart_filename, pilot_chart_bytes)
-        flow_table_html = build_flow_pilot_table_html(weeks_data)
-        pilot_body = f"""
-<h2>3-Week Flow / Velocity Pilot (LE - Africa only)</h2>
-<ac:image ac:width="1000"><ri:attachment ri:filename="{pilot_chart_filename}" /></ac:image>
-<h3>Pilot Summary</h3>
-{flow_table_html}
-"""
+    pilot_chart_bytes = generate_flow_pilot_chart(workgroup, weeks_data)
+    upload_attachment(page_id, pilot_chart_filename, pilot_chart_bytes)
+    pilot_body = build_flow_pilot_section_html(workgroup, pilot_chart_filename, weeks_data)
     new_body = f"""
 <h2>Weekly Backlog &amp; Open Trend</h2>
 <ac:image ac:width="1100"><ri:attachment ri:filename="{chart_filename}" /></ac:image>
