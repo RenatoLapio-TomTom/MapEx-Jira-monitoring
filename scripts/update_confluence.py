@@ -2,6 +2,7 @@ import os
 import csv
 import html
 import io
+import re
 import requests
 import matplotlib
 matplotlib.use("Agg")
@@ -201,7 +202,7 @@ def build_flow_pilot_table_html(weeks_data):
 
 def chart_filenames(workgroup):
     """Return stable (backlog/open chart, flow pilot chart) attachment filenames for a workgroup."""
-    base = f"chart_{workgroup.replace(' ', '_').replace('-', '_')}"
+    base = f"chart_{re.sub(r'[^A-Za-z0-9]', '_', workgroup)}"
     return f"{base}.png", f"{base}_flow_pilot.png"
 
 
