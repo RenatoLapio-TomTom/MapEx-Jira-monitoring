@@ -58,12 +58,22 @@ To refresh historical weeks after flow tracking changes:
 1. Go to **Actions → Jira Weekly Monitoring**.
 2. Click **Run workflow**.
 3. Set `backfill_weeks` (workflow_dispatch input), for example:
-   - `2026-W37,2026-W38`
+   - `2026-W38,2026-W39,2026-W40`
 4. Run the workflow.
 
 Backfill runs upsert rows by `(week, workgroup)` in `data/weekly_snapshots.csv`, so targeted historical weeks are refreshed while other rows are preserved.
 
 Historical Jira flow counts depend on available changelog history and use the current workgroup-field attribution on the returned issues.
+
+After merging a collector change, run the backfill above and confirm **Collect Jira data**,
+**Update Confluence pages**, and **Commit updated CSV** complete. Check that flow totals
+match Jira for each week and that each issue is attributed to its current workgroup.
+Historical backlog/open counts are end-of-day stock snapshots; if Jira rejects a
+historical snapshot query, the backfill preserves the saved stock counts, refreshes
+flow metrics, and marks stock as `n/a` only for any newly encountered workgroup
+without a saved snapshot. A Jira runtime check is needed to confirm the upstream
+historical snapshot query works; retry exhaustion is reported with its week,
+category, and HTTP status when available.
 
 ## File structure
 

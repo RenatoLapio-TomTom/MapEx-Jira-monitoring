@@ -9,7 +9,10 @@ import csv
 import json
 import base64
 import argparse
+import email.utils
+import math
 import requests
+import time
 from datetime import datetime, date, timedelta, timezone
 from collections import defaultdict
 from pathlib import Path
@@ -21,6 +24,11 @@ JIRA_API = f"{BASE_URL}/rest/api/3"
 
 WORKGROUP_FIELD = os.environ.get("WORKGROUP_FIELD", "customfield_10521")
 DATA_FILE = Path("data/weekly_snapshots.csv")
+LATEST_SNAPSHOT_FILE = Path("data/latest_snapshot.json")
+REQUEST_TIMEOUT_SECONDS = 60
+MAX_REQUEST_ATTEMPTS = 4
+RETRYABLE_STATUS_CODES = {429, 500, 502, 503, 504}
+MAX_RETRY_DELAY_SECONDS = 30
 
 BACKFILL_DATES = {
     "2026-W28": "2026-07-11",
@@ -38,7 +46,35 @@ AUTH_HEADERS = {
 }
 
 
-def jira_search(jql, fields):
+class JiraSearchError(RuntimeError):
+    def __init__(self, category, week, status_code=None, retryable=False):
+        detail = f"HTTP {status_code}" if status_code is not None else "request error"
+        super().__init__(f"Jira {category} search for {week} failed: {detail}")
+        self.retryable = retryable
+
+
+def retry_delay(response, attempt):
+    retry_after = response.headers.get("Retry-After")
+    if retry_after:
+        try:
+            seconds = float(retry_after)
+            if math.isfinite(seconds):
+                return min(max(seconds, 0), MAX_RETRY_DELAY_SECONDS)
+        except ValueError:
+            try:
+                retry_at = email.utils.parsedate_to_datetime(retry_after)
+                if retry_at.tzinfo is None:
+                    retry_at = retry_at.replace(tzinfo=timezone.utc)
+                return min(
+                    max((retry_at - datetime.now(timezone.utc)).total_seconds(), 0),
+                    MAX_RETRY_DELAY_SECONDS,
+                )
+            except (TypeError, ValueError, OverflowError):
+                pass
+    return min(2 ** attempt, MAX_RETRY_DELAY_SECONDS)
+
+
+def jira_search(jql, fields, category="issues", week="unknown"):
     """
     Paginate through all Jira issues using POST /rest/api/3/search/jql.
     Uses nextPageToken-based pagination as required by the new endpoint.
@@ -56,11 +92,41 @@ def jira_search(jql, fields):
         if next_page_token:
             payload["nextPageToken"] = next_page_token
 
-        resp = requests.post(url, headers=AUTH_HEADERS, data=json.dumps(payload))
-        print(f"  POST {url} -> HTTP {resp.status_code}")
-        if not resp.ok:
-            print(f"  Response body: {resp.text[:500]}")
-        resp.raise_for_status()
+        for attempt in range(1, MAX_REQUEST_ATTEMPTS + 1):
+            try:
+                resp = requests.post(
+                    url,
+                    headers=AUTH_HEADERS,
+                    json=payload,
+                    timeout=REQUEST_TIMEOUT_SECONDS,
+                )
+            except requests.RequestException as exc:
+                if attempt == MAX_REQUEST_ATTEMPTS:
+                    raise JiraSearchError(category, week, retryable=True) from exc
+                delay = min(2 ** attempt, MAX_RETRY_DELAY_SECONDS)
+                print(
+                    f"  Jira {category} search for {week}: request error "
+                    f"(attempt {attempt}/{MAX_REQUEST_ATTEMPTS}); retrying in {delay}s"
+                )
+                time.sleep(delay)
+                continue
+
+            print(f"  POST {url} -> HTTP {resp.status_code}")
+            if resp.status_code in RETRYABLE_STATUS_CODES:
+                if attempt == MAX_REQUEST_ATTEMPTS:
+                    raise JiraSearchError(
+                        category, week, resp.status_code, retryable=True
+                    )
+                delay = retry_delay(resp, attempt)
+                print(
+                    f"  Jira {category} search for {week}: HTTP {resp.status_code} "
+                    f"(attempt {attempt}/{MAX_REQUEST_ATTEMPTS}); retrying in {delay:g}s"
+                )
+                time.sleep(delay)
+                continue
+            if not resp.ok:
+                raise JiraSearchError(category, week, resp.status_code)
+            break
 
         data = resp.json()
         issues = data.get("issues", [])
@@ -170,17 +236,34 @@ def main(backfill_weeks=None):
             f'DURING ("{week_start_str}", "{week_end_str}") AND createdDate > "2026-01-01"'
         )
 
-        print("\n-- Fetching BACKLOG issues --")
-        backlog_issues = jira_search(jql_backlog, fields)
+        existing_week_rows = {
+            row["workgroup"]: row for row in existing_rows if row["week"] == iso_week
+        }
+        snapshots_available = True
+        try:
+            print("\n-- Fetching BACKLOG issues --")
+            backlog_issues = jira_search(
+                jql_backlog, fields, "BACKLOG snapshot", iso_week
+            )
+            print("\n-- Fetching OPEN issues --")
+            open_issues = jira_search(jql_open, fields, "OPEN snapshot", iso_week)
+        except JiraSearchError as exc:
+            if not (is_backfill and exc.retryable):
+                raise
+            snapshots_available = False
+            backlog_issues = []
+            open_issues = []
+            print(
+                f"  Historical stock snapshot unavailable for {iso_week}; "
+                "preserving saved backlog/open values and continuing with flow metrics."
+            )
 
-        print("\n-- Fetching OPEN issues --")
-        open_issues = jira_search(jql_open, fields)
         print("\n-- Fetching CREATED issues (arrivals) --")
-        created_issues = jira_search(jql_created, fields)
+        created_issues = jira_search(jql_created, fields, "CREATED flow", iso_week)
         print("\n-- Fetching STARTED issues (Backlog -> Open) --")
-        started_issues = jira_search(jql_started, fields)
+        started_issues = jira_search(jql_started, fields, "STARTED flow", iso_week)
         print("\n-- Fetching CLOSED issues (throughput) --")
-        closed_issues = jira_search(jql_closed, fields)
+        closed_issues = jira_search(jql_closed, fields, "CLOSED flow", iso_week)
 
         backlog_counts = defaultdict(int)
         open_counts    = defaultdict(int)
@@ -200,7 +283,9 @@ def main(backfill_weeks=None):
             closed_counts[extract_workgroup(issue, WORKGROUP_FIELD)] += 1
 
         all_workgroups = sorted(
-            set(backlog_counts) | set(open_counts) | set(created_counts) | set(started_counts) | set(closed_counts)
+            set(backlog_counts) | set(open_counts) | set(created_counts)
+            | set(started_counts) | set(closed_counts)
+            | (set(existing_week_rows) if not snapshots_available else set())
         )
         print(f"\nWorkgroups found: {all_workgroups}")
         for wg in all_workgroups:
@@ -210,13 +295,21 @@ def main(backfill_weeks=None):
                 f"closed={closed_counts[wg]}, net_flow={created_counts[wg] - closed_counts[wg]}"
             )
 
-        week_rows = [
-            {"week": iso_week, "date": date_str, "workgroup": wg,
-             "backlog": backlog_counts[wg], "open": open_counts[wg],
-             "created": created_counts[wg], "started": started_counts[wg],
-             "closed": closed_counts[wg], "net_flow": created_counts[wg] - closed_counts[wg]}
-            for wg in all_workgroups
-        ]
+        week_rows = []
+        for wg in all_workgroups:
+            if snapshots_available:
+                backlog, opened = backlog_counts[wg], open_counts[wg]
+            elif wg in existing_week_rows:
+                backlog = existing_week_rows[wg]["backlog"]
+                opened = existing_week_rows[wg]["open"]
+            else:
+                backlog = opened = ""
+            week_rows.append({
+                "week": iso_week, "date": date_str, "workgroup": wg,
+                "backlog": backlog, "open": opened,
+                "created": created_counts[wg], "started": started_counts[wg],
+                "closed": closed_counts[wg], "net_flow": created_counts[wg] - closed_counts[wg],
+            })
 
         if is_backfill:
             if not week_rows:
@@ -237,18 +330,18 @@ def main(backfill_weeks=None):
                 all_new_rows.extend(new_rows)
                 print(f"\nQueued {len(new_rows)} rows for {iso_week}")
 
-        with open("data/latest_snapshot.json", "w") as f:
+        with open(LATEST_SNAPSHOT_FILE, "w") as f:
             json.dump({
                 "week": iso_week, "date": date_str,
                 "workgroups": {
-                    wg: {
-                        "backlog": backlog_counts[wg],
-                        "open": open_counts[wg],
-                        "created": created_counts[wg],
-                        "started": started_counts[wg],
-                        "closed": closed_counts[wg],
-                        "net_flow": created_counts[wg] - closed_counts[wg],
-                    } for wg in all_workgroups
+                    row["workgroup"]: {
+                        "backlog": row["backlog"],
+                        "open": row["open"],
+                        "created": row["created"],
+                        "started": row["started"],
+                        "closed": row["closed"],
+                        "net_flow": row["net_flow"],
+                    } for row in week_rows
                 }
             }, f, indent=2)
         print("Written data/latest_snapshot.json")
