@@ -55,6 +55,17 @@ class FlowPilotSectionTests(unittest.TestCase):
         self.assertTrue(png.startswith(b"\x89PNG"))
         self.assertTrue(any(t.endswith("— LE - Northeast Asia") for t in titles))
 
+    def test_missing_stock_snapshot_is_displayed_as_unavailable(self):
+        weeks_data = {
+            "2026-W38": {
+                "backlog": None, "open": None,
+                "created": 1, "started": 0, "closed": 0, "net_flow": 1,
+            },
+        }
+        section = uc.build_table_html(weeks_data)
+        self.assertIn("<td>2026-W38</td><td>n/a</td><td>n/a</td><td><strong>n/a</strong></td>", section)
+        self.assertTrue(uc.generate_chart("New team", weeks_data).startswith(b"\x89PNG"))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -48,6 +48,10 @@ def load_data():
             return default
         return int(raw)
 
+    def optional_int(value):
+        raw = str(value).strip() if value is not None else ""
+        return int(raw) if raw else None
+
     with open(CSV_PATH, newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -56,8 +60,8 @@ def load_data():
             created = to_int(row.get("created", 0), 0)
             closed = to_int(row.get("closed", 0), 0)
             data[wg][week] = {
-                "backlog": to_int(row.get("backlog", 0), 0),
-                "open": to_int(row.get("open", 0), 0),
+                "backlog": optional_int(row.get("backlog")),
+                "open": optional_int(row.get("open")),
                 "created": created,
                 "started": to_int(row.get("started", 0), 0),
                 "closed": closed,
@@ -74,8 +78,22 @@ def generate_chart(workgroup, weeks_data):
     if len(weeks) > 16:
         weeks = weeks[-16:]
 
-    backlog_vals = [weeks_data[w]["backlog"] for w in weeks]
-    open_vals = [weeks_data[w]["open"] for w in weeks]
+    stock_known = [
+        weeks_data[w]["backlog"] is not None and weeks_data[w]["open"] is not None
+        for w in weeks
+    ]
+    backlog_vals = [
+        weeks_data[w]["backlog"] if known else np.nan
+        for w, known in zip(weeks, stock_known)
+    ]
+    open_vals = [
+        weeks_data[w]["open"] if known else np.nan
+        for w, known in zip(weeks, stock_known)
+    ]
+    open_bottoms = [
+        weeks_data[w]["backlog"] if known else 0
+        for w, known in zip(weeks, stock_known)
+    ]
 
     x = np.arange(16)  # always 16 slots on x-axis
     width = 0.55        # thinner bars, closer together
@@ -83,14 +101,14 @@ def generate_chart(workgroup, weeks_data):
     fig, ax = plt.subplots(figsize=(16, 5))  # fixed width always
 
     bars_backlog = ax.bar(x[:len(weeks)], backlog_vals, width, label="Backlog", color="#FF9F40")
-    bars_open = ax.bar(x[:len(weeks)], open_vals, width, bottom=backlog_vals, label="Open", color="#36A2EB")
+    bars_open = ax.bar(x[:len(weeks)], open_vals, width, bottom=open_bottoms, label="Open", color="#36A2EB")
 
     # Add value labels inside bars
     for i in range(len(weeks)):
-        if backlog_vals[i] > 0:
+        if stock_known[i] and backlog_vals[i] > 0:
             ax.text(x[i], backlog_vals[i] / 2, str(backlog_vals[i]),
                     ha="center", va="center", fontweight="bold", fontsize=12, color="white")
-        if open_vals[i] > 0:
+        if stock_known[i] and open_vals[i] > 0:
             ax.text(x[i], backlog_vals[i] + open_vals[i] / 2, str(open_vals[i]),
                     ha="center", va="center", fontweight="bold", fontsize=12, color="white")
 
@@ -101,7 +119,11 @@ def generate_chart(workgroup, weeks_data):
     ax.set_xticklabels(weeks, rotation=45, ha="right", fontsize=12)
     ax.set_xlim(-0.5, 15.5)  # fixed x range for 16 slots
     ax.legend(loc="upper right")
-    ax.set_ylim(0, max((b + o for b, o in zip(backlog_vals, open_vals)), default=10) * 1.15)
+    known_totals = [
+        backlog_vals[i] + open_vals[i]
+        for i, known in enumerate(stock_known) if known
+    ]
+    ax.set_ylim(0, max(known_totals, default=10) * 1.15)
 
     plt.tight_layout()
 
@@ -118,8 +140,11 @@ def build_table_html(weeks_data):
     for w in weeks:
         b = weeks_data[w]["backlog"]
         o = weeks_data[w]["open"]
-        total = b + o
-        rows += f"<tr><td>{w}</td><td>{b}</td><td>{o}</td><td><strong>{total}</strong></td></tr>"
+        if b is None or o is None:
+            backlog, opened, total = "n/a", "n/a", "n/a"
+        else:
+            backlog, opened, total = b, o, b + o
+        rows += f"<tr><td>{w}</td><td>{backlog}</td><td>{opened}</td><td><strong>{total}</strong></td></tr>"
     return f"""
 <table>
   <thead>
