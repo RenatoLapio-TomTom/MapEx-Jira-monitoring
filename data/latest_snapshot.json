@@ -1,134 +1,134 @@
 {
   "week": "2026-W40",
-  "date": "2026-09-29",
+  "date": "2026-10-03",
   "workgroups": {
     "LE - Africa": {
-      "backlog": 13,
+      "backlog": 12,
       "open": 4,
-      "created": 8,
-      "started": 2,
-      "closed": 4,
-      "net_flow": 4
+      "created": 12,
+      "started": 7,
+      "closed": 11,
+      "net_flow": 1
     },
     "LE - Canada and USA": {
-      "backlog": 5,
-      "open": 68,
-      "created": 4,
-      "started": 4,
-      "closed": 4,
-      "net_flow": 0
+      "backlog": 3,
+      "open": 73,
+      "created": 15,
+      "started": 18,
+      "closed": 21,
+      "net_flow": -6
     },
     "LE - Eastern Europe and Central Asia": {
-      "backlog": 14,
-      "open": 2,
-      "created": 14,
-      "started": 6,
-      "closed": 3,
-      "net_flow": 11
+      "backlog": 9,
+      "open": 1,
+      "created": 38,
+      "started": 26,
+      "closed": 50,
+      "net_flow": -12
     },
     "LE - Mexico and Latin America": {
       "backlog": 5,
-      "open": 1,
-      "created": 3,
-      "started": 1,
-      "closed": 5,
-      "net_flow": -2
+      "open": 0,
+      "created": 11,
+      "started": 9,
+      "closed": 40,
+      "net_flow": -29
     },
     "LE - North and Central Europe": {
-      "backlog": 17,
-      "open": 73,
-      "created": 9,
-      "started": 26,
-      "closed": 32,
-      "net_flow": -23
+      "backlog": 13,
+      "open": 164,
+      "created": 120,
+      "started": 140,
+      "closed": 56,
+      "net_flow": 64
     },
     "LE - Northeast Asia": {
-      "backlog": 31,
-      "open": 1,
-      "created": 8,
-      "started": 3,
-      "closed": 7,
-      "net_flow": 1
+      "backlog": 17,
+      "open": 2,
+      "created": 16,
+      "started": 18,
+      "closed": 46,
+      "net_flow": -30
     },
     "LE - South Asia and Middle East": {
-      "backlog": 27,
-      "open": 19,
-      "created": 7,
-      "started": 5,
-      "closed": 3,
-      "net_flow": 4
+      "backlog": 26,
+      "open": 21,
+      "created": 11,
+      "started": 10,
+      "closed": 18,
+      "net_flow": -7
     },
     "LE - South West Europe": {
-      "backlog": 21,
-      "open": 6,
-      "created": 7,
-      "started": 8,
-      "closed": 10,
-      "net_flow": -3
+      "backlog": 22,
+      "open": 4,
+      "created": 21,
+      "started": 19,
+      "closed": 48,
+      "net_flow": -27
     },
     "LE - Southeast Asia and Oceania": {
-      "backlog": 17,
-      "open": 7,
-      "created": 4,
-      "started": 10,
-      "closed": 12,
-      "net_flow": -8
+      "backlog": 9,
+      "open": 6,
+      "created": 10,
+      "started": 23,
+      "closed": 34,
+      "net_flow": -24
     },
     "Map Experts Gent": {
-      "backlog": 24,
-      "open": 16,
+      "backlog": 21,
+      "open": 19,
       "created": 0,
-      "started": 0,
+      "started": 3,
       "closed": 32,
       "net_flow": -32
     },
     "Map Experts Internal": {
-      "backlog": 28,
+      "backlog": 29,
       "open": 11,
-      "created": 1,
-      "started": 2,
-      "closed": 0,
-      "net_flow": 1
+      "created": 4,
+      "started": 4,
+      "closed": 1,
+      "net_flow": 3
     },
     "Map Experts LCC": {
       "backlog": 0,
       "open": 0,
       "created": 0,
       "started": 1,
-      "closed": 0,
-      "net_flow": 0
+      "closed": 1,
+      "net_flow": -1
     },
     "Map Experts Lebanon": {
-      "backlog": 99,
-      "open": 141,
-      "created": 0,
-      "started": 11,
-      "closed": 9,
-      "net_flow": -9
+      "backlog": 97,
+      "open": 146,
+      "created": 24,
+      "started": 31,
+      "closed": 28,
+      "net_flow": -4
     },
     "Map Experts Lodz": {
       "backlog": 10,
       "open": 25,
-      "created": 2,
-      "started": 2,
-      "closed": 7,
-      "net_flow": -5
+      "created": 5,
+      "started": 5,
+      "closed": 13,
+      "net_flow": -8
     },
     "Map Experts Pune": {
-      "backlog": 42,
-      "open": 25,
-      "created": 4,
-      "started": 5,
-      "closed": 3,
-      "net_flow": 1
+      "backlog": 39,
+      "open": 24,
+      "created": 10,
+      "started": 11,
+      "closed": 19,
+      "net_flow": -9
     },
     "Unassigned": {
-      "backlog": 33,
-      "open": 33,
-      "created": 5,
-      "started": 2,
-      "closed": 9,
-      "net_flow": -4
+      "backlog": 23,
+      "open": 15,
+      "created": 28,
+      "started": 28,
+      "closed": 46,
+      "net_flow": -18
     }
   }
 }
