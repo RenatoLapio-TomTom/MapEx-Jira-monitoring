@@ -1,134 +1,134 @@
 {
-  "week": "2026-W40",
-  "date": "2026-10-03",
+  "week": "2026-W41",
+  "date": "2026-10-10",
   "workgroups": {
     "LE - Africa": {
-      "backlog": 12,
-      "open": 4,
-      "created": 12,
-      "started": 7,
-      "closed": 11,
-      "net_flow": 1
+      "backlog": 6,
+      "open": 9,
+      "created": 7,
+      "started": 12,
+      "closed": 5,
+      "net_flow": 2
     },
     "LE - Canada and USA": {
-      "backlog": 3,
-      "open": 73,
-      "created": 15,
-      "started": 18,
-      "closed": 21,
-      "net_flow": -6
+      "backlog": 8,
+      "open": 90,
+      "created": 48,
+      "started": 38,
+      "closed": 17,
+      "net_flow": 31
     },
     "LE - Eastern Europe and Central Asia": {
-      "backlog": 9,
+      "backlog": 17,
       "open": 1,
-      "created": 38,
-      "started": 26,
-      "closed": 50,
-      "net_flow": -12
+      "created": 44,
+      "started": 24,
+      "closed": 25,
+      "net_flow": 19
     },
     "LE - Mexico and Latin America": {
-      "backlog": 5,
-      "open": 0,
-      "created": 11,
-      "started": 9,
-      "closed": 40,
-      "net_flow": -29
+      "backlog": 1,
+      "open": 2,
+      "created": 17,
+      "started": 20,
+      "closed": 8,
+      "net_flow": 9
     },
     "LE - North and Central Europe": {
-      "backlog": 13,
-      "open": 164,
-      "created": 120,
-      "started": 140,
-      "closed": 56,
-      "net_flow": 64
+      "backlog": 22,
+      "open": 177,
+      "created": 61,
+      "started": 52,
+      "closed": 37,
+      "net_flow": 24
     },
     "LE - Northeast Asia": {
-      "backlog": 17,
-      "open": 2,
-      "created": 16,
-      "started": 18,
-      "closed": 46,
-      "net_flow": -30
+      "backlog": 21,
+      "open": 8,
+      "created": 40,
+      "started": 34,
+      "closed": 27,
+      "net_flow": 13
     },
     "LE - South Asia and Middle East": {
-      "backlog": 26,
-      "open": 21,
-      "created": 11,
-      "started": 10,
-      "closed": 18,
-      "net_flow": -7
+      "backlog": 18,
+      "open": 26,
+      "created": 16,
+      "started": 22,
+      "closed": 10,
+      "net_flow": 6
     },
     "LE - South West Europe": {
-      "backlog": 22,
-      "open": 4,
-      "created": 21,
-      "started": 19,
-      "closed": 48,
-      "net_flow": -27
+      "backlog": 26,
+      "open": 5,
+      "created": 36,
+      "started": 25,
+      "closed": 21,
+      "net_flow": 15
     },
     "LE - Southeast Asia and Oceania": {
-      "backlog": 9,
-      "open": 6,
-      "created": 10,
-      "started": 23,
-      "closed": 34,
-      "net_flow": -24
+      "backlog": 11,
+      "open": 8,
+      "created": 25,
+      "started": 22,
+      "closed": 13,
+      "net_flow": 12
     },
     "Map Experts Gent": {
-      "backlog": 21,
-      "open": 19,
-      "created": 0,
-      "started": 3,
-      "closed": 32,
-      "net_flow": -32
+      "backlog": 18,
+      "open": 23,
+      "created": 1,
+      "started": 4,
+      "closed": 0,
+      "net_flow": 1
     },
     "Map Experts Internal": {
-      "backlog": 29,
-      "open": 11,
-      "created": 4,
-      "started": 4,
-      "closed": 1,
-      "net_flow": 3
-    },
-    "Map Experts LCC": {
-      "backlog": 0,
-      "open": 0,
-      "created": 0,
-      "started": 1,
-      "closed": 1,
-      "net_flow": -1
+      "backlog": 20,
+      "open": 12,
+      "created": 8,
+      "started": 7,
+      "closed": 18,
+      "net_flow": -10
     },
     "Map Experts Lebanon": {
-      "backlog": 97,
-      "open": 146,
-      "created": 24,
-      "started": 31,
-      "closed": 28,
-      "net_flow": -4
+      "backlog": 92,
+      "open": 149,
+      "created": 11,
+      "started": 15,
+      "closed": 13,
+      "net_flow": -2
     },
     "Map Experts Lodz": {
       "backlog": 10,
       "open": 25,
-      "created": 5,
-      "started": 5,
-      "closed": 13,
-      "net_flow": -8
+      "created": 10,
+      "started": 10,
+      "closed": 8,
+      "net_flow": 2
     },
     "Map Experts Pune": {
       "backlog": 39,
-      "open": 24,
-      "created": 10,
+      "open": 22,
+      "created": 16,
       "started": 11,
-      "closed": 19,
-      "net_flow": -9
+      "closed": 21,
+      "net_flow": -5
+    },
+    "Sourcing Ops": {
+      "backlog": 0,
+      "open": 1,
+      "created": 1,
+      "started": 1,
+      "closed": 0,
+      "net_flow": 1
     },
     "Unassigned": {
       "backlog": 23,
       "open": 15,
-      "created": 28,
-      "started": 28,
-      "closed": 46,
-      "net_flow": -18
+      "created": 4,
+      "started": 3,
+      "closed": 3,
+      "net_flow": 1
     }
   }
 }
