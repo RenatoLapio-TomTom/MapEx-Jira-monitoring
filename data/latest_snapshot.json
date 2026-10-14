@@ -1,134 +1,134 @@
 {
-  "week": "2026-W41",
-  "date": "2026-10-10",
+  "week": "2026-W42",
+  "date": "2026-10-14",
   "workgroups": {
     "LE - Africa": {
-      "backlog": 6,
+      "backlog": 5,
       "open": 9,
-      "created": 7,
-      "started": 12,
-      "closed": 5,
-      "net_flow": 2
+      "created": 1,
+      "started": 2,
+      "closed": 1,
+      "net_flow": 0
     },
     "LE - Canada and USA": {
       "backlog": 8,
-      "open": 90,
-      "created": 48,
-      "started": 38,
-      "closed": 17,
-      "net_flow": 31
+      "open": 94,
+      "created": 17,
+      "started": 15,
+      "closed": 7,
+      "net_flow": 10
     },
     "LE - Eastern Europe and Central Asia": {
-      "backlog": 17,
-      "open": 1,
-      "created": 44,
-      "started": 24,
-      "closed": 25,
-      "net_flow": 19
+      "backlog": 15,
+      "open": 0,
+      "created": 6,
+      "started": 7,
+      "closed": 12,
+      "net_flow": -6
     },
     "LE - Mexico and Latin America": {
-      "backlog": 1,
-      "open": 2,
-      "created": 17,
-      "started": 20,
-      "closed": 8,
-      "net_flow": 9
-    },
-    "LE - North and Central Europe": {
-      "backlog": 22,
-      "open": 177,
-      "created": 61,
-      "started": 52,
-      "closed": 37,
-      "net_flow": 24
-    },
-    "LE - Northeast Asia": {
-      "backlog": 21,
-      "open": 8,
-      "created": 40,
-      "started": 34,
-      "closed": 27,
-      "net_flow": 13
-    },
-    "LE - South Asia and Middle East": {
-      "backlog": 18,
-      "open": 26,
-      "created": 16,
-      "started": 22,
-      "closed": 10,
-      "net_flow": 6
-    },
-    "LE - South West Europe": {
-      "backlog": 26,
-      "open": 5,
-      "created": 36,
-      "started": 25,
-      "closed": 21,
-      "net_flow": 15
-    },
-    "LE - Southeast Asia and Oceania": {
-      "backlog": 11,
-      "open": 8,
-      "created": 25,
-      "started": 22,
-      "closed": 13,
+      "backlog": 13,
+      "open": 1,
+      "created": 13,
+      "started": 1,
+      "closed": 1,
       "net_flow": 12
     },
+    "LE - North and Central Europe": {
+      "backlog": 21,
+      "open": 180,
+      "created": 28,
+      "started": 28,
+      "closed": 28,
+      "net_flow": 0
+    },
+    "LE - Northeast Asia": {
+      "backlog": 28,
+      "open": 10,
+      "created": 12,
+      "started": 13,
+      "closed": 6,
+      "net_flow": 6
+    },
+    "LE - South Asia and Middle East": {
+      "backlog": 16,
+      "open": 21,
+      "created": 8,
+      "started": 9,
+      "closed": 7,
+      "net_flow": 1
+    },
+    "LE - South West Europe": {
+      "backlog": 25,
+      "open": 5,
+      "created": 12,
+      "started": 12,
+      "closed": 9,
+      "net_flow": 3
+    },
+    "LE - Southeast Asia and Oceania": {
+      "backlog": 8,
+      "open": 16,
+      "created": 19,
+      "started": 22,
+      "closed": 8,
+      "net_flow": 11
+    },
     "Map Experts Gent": {
-      "backlog": 18,
-      "open": 23,
-      "created": 1,
+      "backlog": 20,
+      "open": 37,
+      "created": 3,
       "started": 4,
       "closed": 0,
-      "net_flow": 1
+      "net_flow": 3
     },
     "Map Experts Internal": {
       "backlog": 20,
-      "open": 12,
-      "created": 8,
-      "started": 7,
-      "closed": 18,
-      "net_flow": -10
+      "open": 10,
+      "created": 1,
+      "started": 1,
+      "closed": 1,
+      "net_flow": 0
     },
     "Map Experts Lebanon": {
-      "backlog": 92,
-      "open": 149,
-      "created": 11,
-      "started": 15,
-      "closed": 13,
-      "net_flow": -2
+      "backlog": 122,
+      "open": 161,
+      "created": 43,
+      "started": 17,
+      "closed": 3,
+      "net_flow": 40
     },
     "Map Experts Lodz": {
       "backlog": 10,
-      "open": 25,
-      "created": 10,
-      "started": 10,
-      "closed": 8,
-      "net_flow": 2
+      "open": 26,
+      "created": 3,
+      "started": 3,
+      "closed": 3,
+      "net_flow": 0
     },
     "Map Experts Pune": {
-      "backlog": 39,
+      "backlog": 41,
       "open": 22,
-      "created": 16,
-      "started": 11,
-      "closed": 21,
-      "net_flow": -5
+      "created": 11,
+      "started": 9,
+      "closed": 9,
+      "net_flow": 2
     },
     "Sourcing Ops": {
       "backlog": 0,
       "open": 1,
-      "created": 1,
-      "started": 1,
+      "created": 0,
+      "started": 0,
       "closed": 0,
-      "net_flow": 1
+      "net_flow": 0
     },
     "Unassigned": {
       "backlog": 23,
-      "open": 15,
-      "created": 4,
-      "started": 3,
+      "open": 16,
+      "created": 8,
+      "started": 8,
       "closed": 3,
-      "net_flow": 1
+      "net_flow": 5
     }
   }
 }
