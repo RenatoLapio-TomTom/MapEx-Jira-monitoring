@@ -18,10 +18,11 @@ with trend charts published to Confluence.
 5. One Confluence page per workgroup is created/updated in the `~lapio` space
    with a **16-week stacked backlog/open chart**.
 6. Every configured workgroup page (see `WORKGROUP_PAGE_IDS` in
-   `scripts/update_confluence.py`) also gets a workgroup-specific 3-week
-   flow/velocity chart (Created vs Closed bars + Net Flow line, attached as
-   `chart_<workgroup>_flow_pilot.png`) and a compact pilot summary table
-   covering the latest three available weeks:
+   `scripts/update_confluence.py`) also gets a workgroup-specific weekly
+   flow/velocity trend chart (Created vs Closed bars + Net Flow line, attached as
+   `chart_<workgroup>_flow_pilot.png`) and a compact flow summary table
+   covering every available week from `2026-W39` onward (the history grows by
+   one week with each new snapshot):
    - `Created`: new MAPEX issues created in the week (arrivals)
    - `Started`: issues moved from Backlog to Open in the week
    - `Closed`: issues moved to Closed in the week (throughput)

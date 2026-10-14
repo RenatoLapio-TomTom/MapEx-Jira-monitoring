@@ -162,8 +162,16 @@ def build_table_html(weeks_data):
 """
 
 
+FLOW_HISTORY_START_WEEK = "2026-W39"
+
+
+def flow_history_weeks(weeks_data):
+    """Return all weeks from FLOW_HISTORY_START_WEEK onward, in chronological order."""
+    return sorted(w for w in weeks_data if w >= FLOW_HISTORY_START_WEEK)
+
+
 def generate_flow_pilot_chart(workgroup, weeks_data):
-    weeks = sorted(weeks_data.keys())[-3:]
+    weeks = flow_history_weeks(weeks_data)
     created_vals = [weeks_data[w].get("created", 0) for w in weeks]
     closed_vals = [weeks_data[w].get("closed", 0) for w in weeks]
     net_vals = [c - cl for c, cl in zip(created_vals, closed_vals)]
@@ -178,9 +186,9 @@ def generate_flow_pilot_chart(workgroup, weeks_data):
     ax.axhline(0, color="#666666", linewidth=1, linestyle="--")
 
     ax.set_xticks(x)
-    ax.set_xticklabels(weeks, rotation=0)
+    ax.set_xticklabels(weeks, rotation=45, ha="right")
     ax.set_ylabel("Issue Count")
-    ax.set_title(f"3-Week Flow / Velocity Pilot (Created vs Closed with Net Flow) — {workgroup}")
+    ax.set_title(f"Weekly Flow / Velocity Trend (Created vs Closed with Net Flow) — {workgroup}")
     ax.legend(loc="upper left")
     y_top = max(created_vals + closed_vals + [abs(v) for v in net_vals] + [1])
     ax.set_ylim(min(0, min(net_vals + [0])) - 1, y_top * 1.2)
@@ -194,7 +202,7 @@ def generate_flow_pilot_chart(workgroup, weeks_data):
 
 
 def build_flow_pilot_table_html(weeks_data):
-    weeks = sorted(weeks_data.keys())[-3:]
+    weeks = flow_history_weeks(weeks_data)
     rows = ""
     for w in weeks:
         created = weeks_data[w].get("created", 0)
@@ -234,9 +242,9 @@ def chart_filenames(workgroup):
 def build_flow_pilot_section_html(workgroup, pilot_chart_filename, weeks_data):
     flow_table_html = build_flow_pilot_table_html(weeks_data)
     return f"""
-<h2>3-Week Flow / Velocity Pilot ({html.escape(workgroup)})</h2>
+<h2>Weekly Flow / Velocity Trend ({html.escape(workgroup)})</h2>
 <ac:image ac:width="1000"><ri:attachment ri:filename="{html.escape(pilot_chart_filename)}" /></ac:image>
-<h3>Pilot Summary</h3>
+<h3>Flow Summary</h3>
 {flow_table_html}
 """
 
