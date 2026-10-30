@@ -322,18 +322,169 @@ def update_page(page_id, workgroup, weeks_data):
     put_response.raise_for_status()
     print(f"  ✅ Updated: {workgroup} (page {page_id})")
 
+# --- Parent Page & Burndown Config ---
+PARENT_PAGE_ID = "2244051201"
+BURNDOWN_CHART_FILENAME = "chart_vse_burndown_4workgroups.png"
+BURNDOWN_WORKGROUPS = [
+    "Map Experts Lebanon",
+    "Map Experts Gent",
+    "Map Experts Pune",
+    "Map Experts Lodz",
+]
+
+
+def generate_vse_burndown_chart(data):
+  """Generates a single multi-line burndown chart for the 4 VSE workgroups."""
+  colors = {
+      "Map Experts Lebanon": "#DE350B",  # Red / Orange
+      "Map Experts Gent": "#0052CC",  # Blue
+      "Map Experts Pune": "#FFAB00",  # Amber / Yellow
+      "Map Experts Lodz": "#36B37E",  # Green
+  }
+
+  # Collect all available weeks across the 4 workgroups
+  all_weeks = set()
+  for wg in BURNDOWN_WORKGROUPS:
+    if wg in data:
+      all_weeks.update(data[wg].keys())
+
+  weeks = sorted(all_weeks)
+  # Show up to the last 16 weeks so the chart stays clean and legible
+  if len(weeks) > 16:
+    weeks = weeks[-16:]
+
+  fig, ax = plt.subplots(figsize=(14, 6))
+
+  # Plot a line for each workgroup
+  for wg in BURNDOWN_WORKGROUPS:
+    if wg not in data:
+      continue
+
+    wg_data = data[wg]
+    # In your CSV, unresolved = backlog + open
+    totals = []
+    valid_x = []
+    valid_y = []
+
+    for i, w in enumerate(weeks):
+      if w in wg_data:
+        b = wg_data[w].get("backlog")
+        o = wg_data[w].get("open")
+        if b is not None and o is not None:
+          total = b + o
+          valid_x.append(w)
+          valid_y.append(total)
+
+    if valid_x:
+      display_name = wg.replace("Map Experts ", "")
+      ax.plot(
+          valid_x,
+          valid_y,
+          marker="o",
+          linewidth=2.5,
+          markersize=7,
+          label=display_name,
+          color=colors.get(wg, "#172B4D"),
+      )
+
+      # Add data label above the latest point (e.g. "93" for Pune)
+      latest_x = valid_x[-1]
+      latest_y = valid_y[-1]
+      ax.annotate(
+          f"{latest_y}",
+          (latest_x, latest_y),
+          textcoords="offset points",
+          xytext=(0, 8),
+          ha="center",
+          fontweight="bold",
+          fontsize=10,
+          color=colors.get(wg, "#172B4D"),
+      )
+
+  ax.set_title(
+      "VSE Workgroups Year-End Burndown (Unresolved Backlog & Open)",
+      fontsize=14,
+      fontweight="bold",
+      pad=15,
+  )
+  ax.set_xlabel("Reporting Week", fontsize=11, labelpad=10)
+  ax.set_ylabel("Total Unresolved Issues (Backlog + Open)", fontsize=11)
+  ax.set_ylim(bottom=0)  # Always anchor to 0 so the trend to zero is obvious
+  ax.grid(True, linestyle="--", alpha=0.5)
+  ax.legend(title="Workgroup", frameon=True, facecolor="white", loc="upper right")
+  ax.tick_params(axis="x", rotation=45)
+  plt.tight_layout()
+
+  buf = io.BytesIO()
+  fig.savefig(buf, format="png", dpi=150)
+  plt.close(fig)
+  buf.seek(0)
+  return buf.read()
+
+
+def update_parent_page(parent_page_id, data):
+  """Uploads the 4-line burndown chart and updates the parent Confluence page."""
+  print("Updating Parent Page with VSE Burndown Chart...")
+
+  # 1. Generate & Upload chart
+  chart_bytes = generate_vse_burndown_chart(data)
+  upload_attachment(parent_page_id, BURNDOWN_CHART_FILENAME, chart_bytes)
+
+  # 2. Get current page content and version
+  url = f"{CONFLUENCE_BASE_URL}/rest/api/content/{parent_page_id}?expand=version,body.storage"
+  response = requests.get(url, headers=headers, auth=auth)
+  response.raise_for_status()
+  page = response.json()
+  version = page["version"]["number"]
+  title = page["title"]
+  current_body = page["body"]["storage"]["value"]
+
+  # 3. Embed the chart if not already present, or keep it updated
+  burndown_section = f"""
+<h2>VSE Workgroups Year-End Burndown (MAPEX-14892)</h2>
+<p>Tracking the weekly reduction of unresolved issues (Backlog + Open) toward 0 across Lebanon, Gent, Pune, and Lodz.</p>
+<p><ac:image ac:width="1100"><ri:attachment ri:filename="{BURNDOWN_CHART_FILENAME}" /></ac:image></p>
+"""
+  if BURNDOWN_CHART_FILENAME not in current_body:
+    # Insert right before ## Workgroup Pages
+    if "<h2>Workgroup Pages</h2>" in current_body:
+      new_body = current_body.replace(
+          "<h2>Workgroup Pages</h2>",
+          f"{burndown_section}<h2>Workgroup Pages</h2>",
+      )
+    else:
+      new_body = f"{burndown_section}{current_body}"
+  else:
+    new_body = current_body  # Attachment is refreshed on Confluence automatically
+
+  # 4. Save updated page
+  payload = {
+      "version": {"number": version + 1},
+      "title": title,
+      "type": "page",
+      "body": {"storage": {"value": new_body, "representation": "storage"}},
+  }
+  put_url = f"{CONFLUENCE_BASE_URL}/rest/api/content/{parent_page_id}"
+  put_response = requests.put(put_url, headers=headers, auth=auth, json=payload)
+  put_response.raise_for_status()
+  print(f"  ✅ Updated Parent Page: {title} (page {parent_page_id})")
 
 def run():
-    data = load_data()
-    for workgroup, weeks_data in data.items():
-        page_id = WORKGROUP_PAGE_IDS.get(workgroup)
-        if not page_id:
-            print(f"  ⚠️ No page ID configured for: {workgroup} — skipping")
-            continue
-        print(f"Updating {workgroup}...")
-        update_page(page_id, workgroup, weeks_data)
-    print("✅ All Confluence pages updated.")
+  data = load_data()
 
+  # 1. Update the parent page with the 4-line VSE burndown chart
+  update_parent_page(PARENT_PAGE_ID, data)
+
+  # 2. Update all individual workgroup sub-pages
+  for workgroup, weeks_data in data.items():
+    page_id = WORKGROUP_PAGE_IDS.get(workgroup)
+    if not page_id:
+      print(f"  ⚠️ No page ID configured for: {workgroup} — skipping")
+      continue
+    print(f"Updating {workgroup}...")
+    update_page(page_id, workgroup, weeks_data)
+
+  print("✅ All Confluence pages updated.")
 
 if __name__ == "__main__":
     run()
