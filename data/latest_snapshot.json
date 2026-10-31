@@ -1,54 +1,54 @@
 {
   "week": "2026-W44",
-  "date": "2026-10-30",
+  "date": "2026-10-31",
   "workgroups": {
     "LE - Africa": {
       "backlog": 6,
       "open": 4,
       "created": 3,
       "started": 4,
-      "closed": 6,
-      "net_flow": -3
+      "closed": 7,
+      "net_flow": -4
     },
     "LE - Canada and USA": {
-      "backlog": 10,
+      "backlog": 8,
       "open": 74,
       "created": 7,
-      "started": 4,
-      "closed": 14,
-      "net_flow": -7
+      "started": 6,
+      "closed": 19,
+      "net_flow": -12
     },
     "LE - Eastern Europe and Central Asia": {
-      "backlog": 17,
+      "backlog": 18,
       "open": 4,
-      "created": 11,
+      "created": 12,
       "started": 15,
       "closed": 19,
-      "net_flow": -8
+      "net_flow": -7
     },
     "LE - Mexico and Latin America": {
       "backlog": 2,
       "open": 4,
-      "created": 8,
-      "started": 13,
-      "closed": 7,
-      "net_flow": 1
+      "created": 9,
+      "started": 14,
+      "closed": 9,
+      "net_flow": 0
     },
     "LE - North and Central Europe": {
       "backlog": 17,
-      "open": 182,
-      "created": 16,
-      "started": 24,
+      "open": 183,
+      "created": 17,
+      "started": 25,
       "closed": 37,
-      "net_flow": -21
+      "net_flow": -20
     },
     "LE - Northeast Asia": {
       "backlog": 28,
       "open": 3,
       "created": 15,
       "started": 7,
-      "closed": 15,
-      "net_flow": 0
+      "closed": 16,
+      "net_flow": -1
     },
     "LE - South Asia and Middle East": {
       "backlog": 14,
@@ -59,12 +59,12 @@
       "net_flow": -15
     },
     "LE - South West Europe": {
-      "backlog": 30,
-      "open": 4,
-      "created": 15,
-      "started": 17,
-      "closed": 22,
-      "net_flow": -7
+      "backlog": 29,
+      "open": 6,
+      "created": 17,
+      "started": 20,
+      "closed": 23,
+      "net_flow": -6
     },
     "LE - Southeast Asia and Oceania": {
       "backlog": 5,
@@ -111,14 +111,14 @@
       "open": 18,
       "created": 0,
       "started": 2,
-      "closed": 2,
-      "net_flow": -2
+      "closed": 4,
+      "net_flow": -4
     },
     "Unassigned": {
-      "backlog": 20,
-      "open": 18,
+      "backlog": 19,
+      "open": 19,
       "created": 1,
-      "started": 0,
+      "started": 1,
       "closed": 2,
       "net_flow": -1
     }
